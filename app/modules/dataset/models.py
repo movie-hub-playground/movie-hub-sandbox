@@ -67,6 +67,24 @@ class DSMetaData(db.Model):
     ds_metrics = db.relationship("DSMetrics", uselist=False, backref="ds_meta_data", cascade="all, delete")
     
     authors = db.relationship("Author", backref="ds_meta_data", lazy=True, cascade="all, delete")
+    
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "publication_type": self.publication_type.name if self.publication_type else None,
+            "publication_doi": self.publication_doi,
+            "dataset_doi": self.dataset_doi,
+            "tags": self.tags.split(",") if self.tags else [],
+            "deposition_id": self.deposition_id,
+            "metrics": {
+                "number_of_models": self.ds_metrics.number_of_models if self.ds_metrics else None,
+                "number_of_features": self.ds_metrics.number_of_features if self.ds_metrics else None,
+            },
+            "authors": [
+                author.to_dict() for author in self.authors
+            ] if self.authors else []
+        }
 
 
 class DataSet(BaseDataset):

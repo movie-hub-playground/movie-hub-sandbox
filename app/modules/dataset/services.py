@@ -5,7 +5,8 @@ import shutil
 import uuid
 from typing import Optional
 
-from flask import request
+from flask import request, abort
+import difflib
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import DataSet, DSMetaData, DSViewRecord
@@ -139,6 +140,74 @@ class DataSetService(BaseService):
     def get_dataset_doi(self, dataset: DataSet) -> str:
         domain = os.getenv("DOMAIN", "localhost")
         return f"http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}"
+
+    def compare_versions(self, dataset_id: int, v1_id: int = None, v2_id: int = None):
+        import difflib
+        from flask import abort
+
+        dataset = DataSet.query.get(dataset_id)
+        if not dataset:
+            abort(404, "Dataset not found.")
+
+        versions = dataset.versions or []
+
+        # --- Fase 1: mostrar selector si no hay versiones o no se seleccionaron ---
+        if len(versions) < 2:
+            return {
+                "dataset": dataset,
+                "versions": versions,
+                "error": "Not enough versions to compare.",
+            }
+
+        if not v1_id or not v2_id:
+            # Muestra la pantalla con las versiones disponibles para seleccionar
+            return {
+                "dataset": dataset,
+                "versions": versions,
+                "v1": None,
+                "v2": None,
+                "metadata_diff": [],
+                "added_files": [],
+                "deleted_files": [],
+                "modified_files": [],
+                "text_diffs": {},
+            }
+
+        # --- Fase 2: comparar versiones seleccionadas ---
+        v1 = next((v for v in versions if str(v.id) == str(v1_id)), None)
+        v2 = next((v for v in versions if str(v.id) == str(v2_id)), None)
+
+        if not v1 or not v2:
+            return {
+                "dataset": dataset,
+                "versions": versions,
+                "error": "Selected versions not found.",
+            }
+
+        # Comparar metadatos (ejemplo simplificado)
+        meta1 = v1.dataset.ds_meta_data.to_dict() if v1.dataset and v1.dataset.ds_meta_data else {}
+        meta2 = v2.dataset.ds_meta_data.to_dict() if v2.dataset and v2.dataset.ds_meta_data else {}
+
+        metadata_diff = []
+        for key in set(meta1.keys()) | set(meta2.keys()):
+            if meta1.get(key) != meta2.get(key):
+                metadata_diff.append({
+                    "field": key,
+                    "old_value": meta1.get(key),
+                    "new_value": meta2.get(key),
+                })
+
+        return {
+            "dataset": dataset,
+            "versions": versions,
+            "v1": v1,
+            "v2": v2,
+            "metadata_diff": metadata_diff,
+            "added_files": [],
+            "deleted_files": [],
+            "modified_files": [],
+            "text_diffs": {},
+        }
 
 
 class AuthorService(BaseService):

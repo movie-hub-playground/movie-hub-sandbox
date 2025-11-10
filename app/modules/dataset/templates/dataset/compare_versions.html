@@ -1,0 +1,162 @@
+{% extends "base_template.html" %}
+
+{% block title %}Compare dataset versions{% endblock %}
+
+{% block head_extra %}
+<style>
+    .diff-added {
+        background-color: #e6ffed;
+    }
+
+    .diff-removed {
+        background-color: #ffeef0;
+    }
+
+    .diff-container {
+        overflow-x: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #fafafa;
+        font-family: monospace;
+    }
+
+    .badge-change {
+        font-size: 0.85em;
+        border-radius: 5px;
+        padding: 0.35em 0.6em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-6">
+        <a href="/explore" class="btn btn-primary btn-sm" style="border-radius: 5px;">
+            <i data-feather="search" class="center-button-icon"></i>
+            Explore more datasets
+        </a>
+    </div>
+    <div class="col-6 text-end">
+        <a href="/dataset/unsynchronized/{{ dataset.id }}" class="btn btn-outline-secondary btn-sm" style="border-radius: 5px;">
+            <i data-feather="arrow-left"></i>
+            Back to dataset view
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="mb-3"><b>Compare Versions</b></h2>
+        <p class="text-secondary">
+            Dataset from <b>Movie-Hub</b>: <b>{{ dataset.ds_meta_data.title }}</b>
+        </p>
+
+        {% if error %}
+            <div class="alert alert-warning mt-3">{{ error }}</div>
+            <a href="{{ url_for('dataset.list_dataset') }}" class="btn btn-secondary mt-3">← Back</a>
+        {% elif not v1 or not v2 %}
+            <form method="get" class="mt-3">
+                <div class="row align-items-end">
+                    <div class="col-md-5">
+                        <label for="v1" class="form-label text-secondary">Select Version 1</label>
+                        <select id="v1" name="v1" class="form-select">
+                            {% for v in versions %}
+                            <option value="{{ v.id }}">Version {{ v.version_number }} — {{ v.created_at.strftime('%Y-%m-%d') }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="v2" class="form-label text-secondary">Select Version 2</label>
+                        <select id="v2" name="v2" class="form-select">
+                            {% for v in versions %}
+                            <option value="{{ v.id }}">Version {{ v.version_number }} — {{ v.created_at.strftime('%Y-%m-%d') }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Compare</button>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <!-- Metadata Differences -->
+            <h4 class="mt-4">🧾 Metadata changes</h4>
+            {% if metadata_diff %}
+                <table class="table table-bordered table-sm mt-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Field</th>
+                            <th>Old value (v1)</th>
+                            <th>New value (v2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for diff in metadata_diff %}
+                        <tr>
+                            <td><b>{{ diff.field }}</b></td>
+                            <td class="text-danger">{{ diff.old_value }}</td>
+                            <td class="text-success">{{ diff.new_value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No metadata changes between these versions.</p>
+            {% endif %}
+
+            <!-- File Differences -->
+            <h4 class="mt-4">📁 File differences</h4>
+            {% if added_files or deleted_files or modified_files %}
+                <ul class="list-group">
+                    {% for f in added_files %}
+                        <li class="list-group-item text-success">
+                            <i data-feather="plus-circle"></i> Added: <b>{{ f }}</b>
+                        </li>
+                    {% endfor %}
+                    {% for f in deleted_files %}
+                        <li class="list-group-item text-danger">
+                            <i data-feather="x-circle"></i> Deleted: <b>{{ f }}</b>
+                        </li>
+                    {% endfor %}
+                    {% for f in modified_files %}
+                        <li class="list-group-item text-warning">
+                            <i data-feather="edit-3"></i> Modified: <b>{{ f }}</b>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No file changes detected.</p>
+            {% endif %}
+
+            <!-- Text Diffs -->
+            {% if text_diffs %}
+                <h4 class="mt-4">🧩 Text differences</h4>
+                {% for filename, html in text_diffs.items() %}
+                    <div class="card mt-3">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <b>{{ filename }}</b>
+                            <span class="badge bg-warning text-dark">Modified</span>
+                        </div>
+                        <div class="card-body diff-container">
+                            {{ html|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <a href="{{ url_for('dataset.compare_versions', dataset_id=dataset.id) }}" class="btn btn-outline-secondary mt-4">
+                <i data-feather="refresh-ccw"></i> Compare again
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+</script>
+
+{% endblock %}

@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import uuid
 from datetime import datetime, timezone
+from app.modules.dataset.models import DSDownloadRecord, DataSet
 from zipfile import ZipFile
 
 from flask import (
@@ -270,3 +271,13 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+@dataset_bp.route("/dataset/compare/<int:dataset_id>/", methods=["GET"])
+@login_required
+def compare_versions(dataset_id):
+    v1_id = request.args.get("v1")
+    v2_id = request.args.get("v2")
+
+    context = dataset_service.compare_versions(dataset_id, v1_id, v2_id)
+    return render_template("dataset/compare_versions.html", **context)
+
