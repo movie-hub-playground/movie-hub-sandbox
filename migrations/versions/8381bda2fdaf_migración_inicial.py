@@ -30,6 +30,14 @@ def upgrade():
     sa.Column('number_of_features', sa.String(length=120), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('fakenodo',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('movie_metadata', sa.JSON(), nullable=False),
+    sa.Column('status', sa.String(length=50), nullable=True),
+    sa.Column('doi', sa.String(length=250), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('doi')
+    )
     op.create_table('fm_metrics',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('solver', sa.Text(), nullable=True),
@@ -208,6 +216,21 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    
+    op.execute("""
+    CREATE VIEW movie_dataset_view AS
+    SELECT 
+        m.id AS movie_dataset_id,
+        b.user_id,
+        b.created_at,
+        b.ds_meta_data_id,
+        b.current_version,
+        b.total_size_bytes,
+        b.total_size_human,
+        b.dataset_type
+    FROM movie_dataset m
+    JOIN base_dataset b ON m.id = b.id;
+    """)
     # ### end Alembic commands ###
 
 
@@ -233,4 +256,5 @@ def downgrade():
     op.drop_table('fm_metrics')
     op.drop_table('ds_metrics')
     op.drop_table('doi_mapping')
+    op.execute("DROP VIEW IF EXISTS movie_dataset_view;")
     # ### end Alembic commands ###

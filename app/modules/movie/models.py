@@ -81,6 +81,11 @@ class MovieDataset(BaseDataset):
         """Retorna el número de películas en el dataset"""
         return len(self.movies)
     
+    @property
+    def user(self):
+        from app.modules.auth.models import User
+        return User.query.get(self.user_id)
+    
     def to_dict(self):
         """Convierte el dataset a diccionario para JSON/APIs"""
         return {

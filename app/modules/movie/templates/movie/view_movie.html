@@ -1,0 +1,215 @@
+{% extends "base_template.html" %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block head_extra %}
+<style>
+    .movie-detail-poster {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .movie-detail-section {
+        margin-bottom: 30px;
+    }
+    
+    .movie-detail-label {
+        font-weight: bold;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .movie-detail-value {
+        font-size: 1.1rem;
+    }
+    
+    .rating-display {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        display: inline-block;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    .genre-tag {
+        background-color: #e9ecef;
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-12">
+        <a href="{{ url_for('movie.view_dataset', dataset_id=dataset.id) }}" class="btn btn-outline-primary btn-sm" style="border-radius: 5px;">
+            <i data-feather="arrow-left"></i>
+            Back to {{ dataset.ds_meta_data.title }}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column: Poster -->
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="text-center">
+            {% if movie.poster_url %}
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-detail-poster">
+            {% else %}
+            <div class="movie-detail-poster d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 600px;">
+                <i data-feather="film" style="width: 120px; height: 120px;"></i>
+            </div>
+            {% endif %}
+            
+            {% if movie.imdb_rating %}
+            <div class="mt-4">
+                <div class="rating-display">
+                    ⭐ {{ movie.imdb_rating }}/10
+                </div>
+                <p class="text-muted mt-2">IMDb Rating</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Right Column: Details -->
+    <div class="col-lg-8 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-3"><b>{{ movie.title }}</b></h1>
+                
+                <!-- Basic Info -->
+                <div class="movie-detail-section">
+                    <div class="row">
+                        {% if movie.year %}
+                        <div class="col-md-4 col-6 mb-3">
+                            <div class="movie-detail-label">Year</div>
+                            <div class="movie-detail-value">{{ movie.year }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if movie.duration %}
+                        <div class="col-md-4 col-6 mb-3">
+                            <div class="movie-detail-label">Duration</div>
+                            <div class="movie-detail-value">{{ movie.duration }} min</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if movie.rating %}
+                        <div class="col-md-4 col-6 mb-3">
+                            <div class="movie-detail-label">Rating</div>
+                            <div class="movie-detail-value">{{ movie.rating }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Genre -->
+                {% if movie.genre %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Genre</div>
+                    <div>
+                        <span class="genre-tag">{{ movie.genre }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Director -->
+                {% if movie.director %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Director</div>
+                    <div class="movie-detail-value">{{ movie.director }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Cast -->
+                {% if movie.cast %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Cast</div>
+                    <div class="movie-detail-value">{{ movie.cast }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Synopsis -->
+                {% if movie.synopsis %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Synopsis</div>
+                    <div class="movie-detail-value">{{ movie.synopsis }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Country -->
+                {% if movie.country %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Country</div>
+                    <div class="movie-detail-value">{{ movie.country }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Language -->
+                {% if movie.language %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Language</div>
+                    <div class="movie-detail-value">{{ movie.language }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Budget -->
+                {% if movie.budget %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Budget</div>
+                    <div class="movie-detail-value">{{ movie.budget }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Box Office -->
+                {% if movie.box_office %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Box Office</div>
+                    <div class="movie-detail-value">{{ movie.box_office }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Awards -->
+                {% if movie.awards %}
+                <div class="movie-detail-section">
+                    <div class="movie-detail-label">Awards</div>
+                    <div class="movie-detail-value">{{ movie.awards }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Dataset Info -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">From Dataset</h5>
+                <p class="mb-2">
+                    <a href="{{ url_for('movie.view_dataset', dataset_id=dataset.id) }}">
+                        🎬 {{ dataset.ds_meta_data.title }}
+                    </a>
+                </p>
+                <p class="text-muted small mb-0">
+                    <i data-feather="user" style="width: 14px; height: 14px;"></i>
+                    {{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+</script>
+
+{% endblock %}

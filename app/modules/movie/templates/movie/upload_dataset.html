@@ -1,0 +1,182 @@
+{% extends "base_template.html" %}
+
+{% block title %}Upload Movie Dataset{% endblock %}
+
+{% block head_extra %}
+<style>
+    .placeholder-notice {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .disabled-section {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="h2 mb-3"><b>Upload</b> Movie Dataset</h1>
+
+<!-- Temporary Notice -->
+<div class="placeholder-notice">
+    <h4>🚧 Work in Progress</h4>
+    <p class="mb-0">
+        <strong>Note:</strong> This upload interface is currently under development. 
+        The upload workflow is being designed and will be implemented soon. 
+        This page shows the visual layout only.
+    </p>
+</div>
+
+<div class="row disabled-section">
+    <!-- Left Column: Basic Information -->
+    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+        <div id="basic_info_form">
+            {{ form.hidden_tag() }}
+
+            <h1 class="h3 mb-3">Dataset Information</h1>
+
+            <div class="row" style="padding-left: 2rem">
+                <!-- Title -->
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Dataset Title *</label>
+                        <input type="text" class="form-control" placeholder="e.g., Classic Sci-Fi Collection">
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <textarea rows="4" class="form-control" placeholder="Describe your movie collection..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Publication Type -->
+                <div class="col-lg-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Publication Type</label>
+                        <select class="form-control">
+                            <option value="other">Other</option>
+                            <option value="datamanagementplan">Data Management Plan</option>
+                            <option value="article">Journal Article</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Publication DOI -->
+                <div class="col-lg-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Publication DOI</label>
+                        <input class="form-control" type="text" placeholder="10.1234/example">
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Tags (separated by commas)</label>
+                        <input type="text" class="form-control" placeholder="movies, cinema, classics">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authors Section -->
+            <h1 class="h3 mb-3 mt-4">Authors</h1>
+
+            <div class="row" style="padding-left: 2rem">
+                <div class="col-lg-6 col-12 mb-3">
+                    <label class="form-label">Author name</label>
+                    <input class="form-control" disabled value="Surname, Name">
+                </div>
+
+                <div class="col-lg-6 col-12 mb-3">
+                    <label class="form-label">Author affiliation</label>
+                    <input class="form-control" disabled value="Your Institution">
+                </div>
+
+                <div class="col-lg-6 col-12 mb-3">
+                    <label class="form-label">Author ORCID</label>
+                    <input class="form-control" disabled value="0000-0000-0000-0000">
+                </div>
+
+                <div class="col-12">
+                    <button type="button" class="btn btn-secondary" disabled>Add author</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: File Upload -->
+    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+        <h1 class="h3 mb-3 mt-2">Movie Data Files</h1>
+
+        <div style="padding-left: 2rem">
+            <div class="alert alert-info">
+                <i data-feather="info"></i>
+                <strong>Expected format:</strong> JSON files containing movie information
+            </div>
+
+            <div id="upload_area" style="border: 2px dashed #ccc; padding: 40px; text-align: center; border-radius: 10px; background: #f8f9fa;">
+                <i data-feather="upload-cloud" style="width: 60px; height: 60px; color: #6c757d;"></i>
+                <p class="mt-3 mb-0 text-muted">
+                    <strong>Drag & drop files here</strong><br>
+                    or click to browse<br>
+                    <small>Accepted formats: .json</small>
+                </p>
+            </div>
+
+            <ul class="mt-3" id="file-list">
+                <!-- Placeholder files -->
+                <li class="mb-2">
+                    <strong>example_movies.json</strong>
+                    <span class="badge bg-secondary">25 KB</span>
+                    <button class="btn btn-sm btn-danger" style="margin-left: 10px;" disabled>Delete</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Button Section -->
+<div class="row mt-4 disabled-section">
+    <div class="col-12">
+        <hr>
+        <h1 class="h3 mb-3">Upload Dataset</h1>
+
+        <div style="padding-left: 2rem">
+            <label class="form-check">
+                <input class="form-check-input" type="checkbox" disabled>
+                <span class="form-check-label" style="font-size: 15px">
+                    I agree to have my movie dataset available according to the 
+                    <a href="https://en.wikipedia.org/wiki/Open_science" target="_blank">Open Science</a> principles
+                </span>
+            </label>
+
+            <button class="btn btn-primary mt-2" disabled>
+                <i data-feather="upload" class="center-button-icon"></i>
+                Upload Dataset
+            </button>
+
+            <div class="alert alert-warning mt-3">
+                <i data-feather="alert-triangle"></i>
+                <strong>Coming Soon:</strong> The upload functionality is being implemented. 
+                Check back later for updates!
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+</script>
+
+{% endblock %}

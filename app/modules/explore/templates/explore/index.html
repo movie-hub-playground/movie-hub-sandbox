@@ -1,36 +1,30 @@
 {% extends "base_template.html" %}
 
-{% block title %}Explore{% endblock %}
+{% block title %}Explore Movie Datasets{% endblock %}
 
 {% block content %}
 
-    <h1 class="h2 mb-3"><b>Explore</b></h1>
+    <h1 class="h2 mb-3"><b>Explore</b> Movie Datasets</h1>
 
     <div class="row">
 
         <h3 class="h3 mb-3">
-                <span id="results_number"></span>
-            </h3>
+            <span id="results_number"></span>
+        </h3>
 
         <div class="col-lg-7 scrollable-column">
-
 
             <div class="row">
 
                 <div id="results"></div>
 
-                <div class="col text-center" id="results_not_found">
+                <div class="col text-center" id="results_not_found" style="display: none;">
                     <img src="{{ url_for('static', filename='img/items/not_found.svg') }}"
                          style="width: 50%; max-width: 100px; height: auto; margin-top: 30px"/>
                     <p style="margin-top: 20px">
-                        We have not found any datasets that meet your search criteria. <br>How about trying some others?
+                        We have not found any movie datasets that meet your search criteria. <br>How about trying some others?
                     </p>
                 </div>
-
-                <div id="results_not_found" style="text-align: center;">
-
-                </div>
-
 
             </div>
         </div>
@@ -48,7 +42,7 @@
                         <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label" for="query">
-                                    Search for datasets by title, description, authors, tags, UVL files...
+                                    Search for movie datasets by title, description, authors, tags, movie titles, directors, genres...
                                 </label>
                                 <input class="form-control" id="query" name="query" required="" type="text"
                                        value="" autofocus>
@@ -57,10 +51,8 @@
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label" for="publication_type">Filter by publication
-                                    type</label>
-                                <select class="form-control" id="publication_type" name="publication_type"
-                                        required="">
+                                <label class="form-label" for="publication_type">Filter by publication type</label>
+                                <select class="form-control" id="publication_type" name="publication_type" required="">
                                     <option value="any">Any</option>
                                     <option value="none">None</option>
                                     <option value="annotationcollection">Annotation Collection</option>
@@ -83,7 +75,6 @@
                                     <option value="other">Other</option>
                                 </select>
                             </div>
-
                         </div>
 
                     </div>
@@ -91,12 +82,10 @@
                     <div class="row">
 
                         <div class="col-6">
-
                             <div>
                                 Sort results by creation date
                                 <label class="form-check">
-                                    <input class="form-check-input" type="radio" value="newest" name="sorting"
-                                           checked="">
+                                    <input class="form-check-input" type="radio" value="newest" name="sorting" checked="">
                                     <span class="form-check-label">
                                       Newest first
                                     </span>
@@ -108,7 +97,6 @@
                                     </span>
                                 </label>
                             </div>
-
                         </div>
 
                     </div>
@@ -123,11 +111,10 @@
 
                                 </div>
 
-                                <button id="clear-filters" class="btn btn-outline-primary">
+                                <button id="clear-filters" type="button" class="btn btn-outline-primary">
                                     <i data-feather="x-circle" style="vertical-align: middle; margin-top: -2px"></i>
                                     Clear filters
                                 </button>
-
 
                             </div>
 
@@ -138,15 +125,9 @@
 
             </div>
 
-            <div class="row">
-
-            </div>
-
         </div>
 
-
     </div>
-
 
 {% endblock %}
 

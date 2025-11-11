@@ -1,0 +1,209 @@
+{% extends "base_template.html" %}
+
+{% block title %}{{ dataset.ds_meta_data.title }}{% endblock %}
+
+{% block head_extra %}
+<style>
+    .movie-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .movie-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .movie-poster {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 5px 5px 0 0;
+    }
+    
+    .movie-info {
+        padding: 15px;
+    }
+    
+    .movie-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        min-height: 50px;
+        color: #212529;
+        text-decoration: none;
+    }
+    
+    .movie-title:hover {
+        color: #0d6efd;
+    }
+    
+    .movie-meta {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+    
+    .rating-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    .genre-badge {
+        background-color: #e9ecef;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.85rem;
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-6">
+        <a href="{{ url_for('movie.list_datasets') }}" class="btn btn-primary btn-sm" style="border-radius: 5px;">
+            <i data-feather="search" class="center-button-icon"></i>
+            All datasets
+        </a>
+    </div>
+    <div class="col-6 text-end">
+        {% if current_user.is_authenticated and current_user.id == dataset.user_id %}
+        <a href="{{ url_for('movie.manage_dataset', dataset_id=dataset.id) }}" class="btn btn-outline-secondary btn-sm" style="border-radius: 5px;">
+            <i data-feather="settings"></i>
+            Manage Dataset
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Dataset Info Card -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h1><b>🎬 {{ dataset.ds_meta_data.title }}</b></h1>
+            <div>
+                <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
+                <span class="badge bg-primary">{{ dataset.get_movies_count() }} movies</span>
+            </div>
+        </div>
+        
+        <p class="text-secondary mb-3">{{ dataset.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+        
+        <div class="row mb-3">
+            <div class="col-md-3 text-secondary">Description</div>
+            <div class="col-md-9">{{ dataset.ds_meta_data.description }}</div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-md-3 text-secondary">Uploaded by</div>
+            <div class="col-md-9">
+                <a href="#">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
+            </div>
+        </div>
+        
+        {% if dataset.ds_meta_data.tags %}
+        <div class="row mb-2">
+            <div class="col-md-3 text-secondary">Tags</div>
+            <div class="col-md-9">
+                {% for tag in dataset.ds_meta_data.tags.split(',') %}
+                <span class="badge bg-secondary">{{ tag.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="row mb-3 mt-4">
+            <div class="col-12">
+                <a href="{{ url_for('movie.download_dataset', dataset_id=dataset.id) }}" class="btn btn-success" style="border-radius: 5px;">
+                    <i data-feather="download"></i>
+                    Download Dataset ({{ dataset.get_file_total_size_for_human() }})
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Movies Library -->
+<div class="card">
+    <div class="card-body">
+        <h3 class="mb-4">🎥 Movie Collection</h3>
+        
+        {% if dataset.movies %}
+        <div class="row">
+            {% for movie in dataset.movies %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <a href="{{ url_for('movie.view_movie', movie_id=movie.id) }}" style="text-decoration: none;">
+                    <div class="card movie-card">
+                        {% if movie.poster_url %}
+                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster">
+                        {% else %}
+                        <div class="movie-poster d-flex align-items-center justify-content-center bg-secondary text-white">
+                            <i data-feather="film" style="width: 80px; height: 80px;"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="movie-info">
+                            <div class="movie-title">{{ movie.title }}</div>
+                            
+                            <div class="movie-meta">
+                                {% if movie.year %}
+                                <span>{{ movie.year }}</span>
+                                {% endif %}
+                                {% if movie.duration %}
+                                <span> • {{ movie.duration }} min</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if movie.genre %}
+                            <div class="mb-2">
+                                <span class="genre-badge">{{ movie.genre }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if movie.director %}
+                            <div class="text-muted small mb-2">
+                                <i data-feather="user" style="width: 14px; height: 14px;"></i>
+                                {{ movie.director }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if movie.imdb_rating %}
+                            <div class="mb-2">
+                                <span class="rating-badge">
+                                    ⭐ {{ movie.imdb_rating }}/10
+                                </span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if movie.synopsis %}
+                            <p class="text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                {{ movie.synopsis }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted">No movies found in this dataset.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+</script>
+
+{% endblock %}

@@ -34,6 +34,7 @@ class MovieSeeder(BaseSeeder):
             description="Essential science fiction films that pushed the boundaries of cinema",
             publication_type=PublicationType.OTHER,
             tags="movies, sci-fi, classics, space",
+            dataset_doi="10.1234/scify-2024"
         )
         db.session.add(scifi_meta)
         db.session.flush()
@@ -68,6 +69,7 @@ class MovieSeeder(BaseSeeder):
             description="Essential films from the master of postmodern cinema",
             publication_type=PublicationType.OTHER,
             tags="movies, tarantino, crime, action",
+            dataset_doi="10.1234/tarantino-movies-2024"
         )
         db.session.add(tarantino_meta)
         db.session.flush()

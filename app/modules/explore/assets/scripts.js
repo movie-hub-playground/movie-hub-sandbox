@@ -38,9 +38,9 @@ function send_query() {
                     console.log(data);
                     document.getElementById('results').innerHTML = '';
 
-                    // results counter
+                    // results counter - ADAPTADO PARA MOVIE DATASETS
                     const resultCount = data.length;
-                    const resultText = resultCount === 1 ? 'dataset' : 'datasets';
+                    const resultText = resultCount === 1 ? 'movie dataset' : 'movie datasets';
                     document.getElementById('results_number').textContent = `${resultCount} ${resultText} found`;
 
                     if (resultCount === 0) {
@@ -50,7 +50,7 @@ function send_query() {
                         document.getElementById("results_not_found").style.display = "none";
                     }
 
-
+                    // RENDERIZAR MOVIE DATASETS
                     data.forEach(dataset => {
                         let card = document.createElement('div');
                         card.className = 'col-12';
@@ -58,30 +58,28 @@ function send_query() {
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3><a href="${dataset.url}">${dataset.title}</a></h3>
+                                        <h3><a href="${dataset.url}">🎬 ${dataset.title}</a></h3>
                                         <div>
-                                            <span class="badge bg-primary" style="cursor: pointer;" onclick="set_publication_type_as_query('${dataset.publication_type}')">${dataset.publication_type}</span>
+                                            <span class="badge bg-primary">${dataset.movies_count || 0} ${dataset.movies_count === 1 ? 'movie' : 'movies'}</span>
+                                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="set_publication_type_as_query('${dataset.publication_type}')">${dataset.publication_type}</span>
                                         </div>
                                     </div>
                                     <p class="text-secondary">${formatDate(dataset.created_at)}</p>
 
                                     <div class="row mb-2">
-
                                         <div class="col-md-4 col-12">
-                                            <span class=" text-secondary">
+                                            <span class="text-secondary">
                                                 Description
                                             </span>
                                         </div>
                                         <div class="col-md-8 col-12">
                                             <p class="card-text">${dataset.description}</p>
                                         </div>
-
                                     </div>
 
                                     <div class="row mb-2">
-
                                         <div class="col-md-4 col-12">
-                                            <span class=" text-secondary">
+                                            <span class="text-secondary">
                                                 Authors
                                             </span>
                                         </div>
@@ -90,37 +88,30 @@ function send_query() {
                                                 <p class="p-0 m-0">${author.name}${author.affiliation ? ` (${author.affiliation})` : ''}${author.orcid ? ` (${author.orcid})` : ''}</p>
                                             `).join('')}
                                         </div>
-
                                     </div>
 
                                     <div class="row mb-2">
-
                                         <div class="col-md-4 col-12">
-                                            <span class=" text-secondary">
+                                            <span class="text-secondary">
                                                 Tags
                                             </span>
                                         </div>
                                         <div class="col-md-8 col-12">
                                             ${dataset.tags.map(tag => `<span class="badge bg-primary me-1" style="cursor: pointer;" onclick="set_tag_as_query('${tag}')">${tag}</span>`).join('')}
                                         </div>
-
                                     </div>
 
                                     <div class="row">
-
                                         <div class="col-md-4 col-12">
-
                                         </div>
                                         <div class="col-md-8 col-12">
-                                            <a href="${dataset.url}" class="btn btn-outline-primary btn-sm" id="search" style="border-radius: 5px;">
-                                                View dataset
+                                            <a href="${dataset.url}" class="btn btn-outline-primary btn-sm" style="border-radius: 5px;">
+                                                <i data-feather="eye"></i> View movie library
                                             </a>
-                                            <a href="/dataset/download/${dataset.id}" class="btn btn-outline-primary btn-sm" id="search" style="border-radius: 5px;">
-                                                Download (${dataset.total_size_in_human_format})
+                                            <a href="/movie/dataset/download/${dataset.id}" class="btn btn-outline-secondary btn-sm" style="border-radius: 5px;">
+                                                <i data-feather="download"></i> Download (${dataset.total_size_in_human_format})
                                             </a>
                                         </div>
-
-
                                     </div>
 
                                 </div>
@@ -129,6 +120,10 @@ function send_query() {
 
                         document.getElementById('results').appendChild(card);
                     });
+
+                    if (typeof feather !== 'undefined') {
+                        feather.replace();
+                    }
                 });
         });
     });
@@ -150,7 +145,6 @@ function set_publication_type_as_query(publicationType) {
     const publicationTypeSelect = document.getElementById('publication_type');
     for (let i = 0; i < publicationTypeSelect.options.length; i++) {
         if (publicationTypeSelect.options[i].text === publicationType.trim()) {
-            // Set the value of the select to the value of the matching option
             publicationTypeSelect.value = publicationTypeSelect.options[i].value;
             break;
         }
@@ -161,22 +155,18 @@ function set_publication_type_as_query(publicationType) {
 document.getElementById('clear-filters').addEventListener('click', clearFilters);
 
 function clearFilters() {
-
     // Reset the search query
     let queryInput = document.querySelector('#query');
     queryInput.value = "";
-    // queryInput.dispatchEvent(new Event('input', {bubbles: true}));
 
     // Reset the publication type to its default value
     let publicationTypeSelect = document.querySelector('#publication_type');
-    publicationTypeSelect.value = "any"; // replace "any" with whatever your default value is
-    // publicationTypeSelect.dispatchEvent(new Event('input', {bubbles: true}));
+    publicationTypeSelect.value = "any";
 
     // Reset the sorting option
     let sortingOptions = document.querySelectorAll('[name="sorting"]');
     sortingOptions.forEach(option => {
-        option.checked = option.value == "newest"; // replace "default" with whatever your default value is
-        // option.dispatchEvent(new Event('input', {bubbles: true}));
+        option.checked = option.value == "newest";
     });
 
     // Perform a new search with the reset filters
@@ -184,20 +174,14 @@ function clearFilters() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    //let queryInput = document.querySelector('#query');
-    //queryInput.dispatchEvent(new Event('input', {bubbles: true}));
-
     let urlParams = new URLSearchParams(window.location.search);
     let queryParam = urlParams.get('query');
 
     if (queryParam && queryParam.trim() !== '') {
-
         const queryInput = document.getElementById('query');
         queryInput.value = queryParam
         queryInput.dispatchEvent(new Event('input', {bubbles: true}));
         console.log("throw event");
-
     } else {
         const queryInput = document.getElementById('query');
         queryInput.dispatchEvent(new Event('input', {bubbles: true}));
