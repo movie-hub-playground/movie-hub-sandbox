@@ -174,5 +174,3 @@ class DataSetSeeder(BaseSeeder):
         
         # 🔹 Commit final
         db.session.commit()
-
-        print("✅ DataSetSeeder completado: datasets, versiones y archivos creados.")
