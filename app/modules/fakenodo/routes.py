@@ -74,5 +74,18 @@ def getOne(fakenodo_id):
         service = FakenodoService()
         data = service.get_fakenodo(fakenodo_id)
         return jsonify(data), 200
+    except FileNotFoundError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": "Unexpected error -> " + str(e)}), 500
+    
+@fakenodo_bp.route("/fakenodo/<int:fakenodo_id>/versions", methods=["GET"])
+def get_doi_versions(fakenodo_id):
+    try:
+        service = FakenodoService()
+        data = service.get_doi_versions(fakenodo_id)
+        return jsonify(data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": "Unexpected error -> " + str(e)}), 500

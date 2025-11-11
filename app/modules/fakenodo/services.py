@@ -54,20 +54,26 @@ class FakenodoService(BaseService):
         return fakenodo
     
     def get_fakenodo(self, fakenodo_id):
-        dataset = Fakenodo.query.get(fakenodo_id)
-        if not dataset:
-            raise Exception("Dataset not found")
+        fakenodo = Fakenodo.query.get(fakenodo_id)
+        if not fakenodo:
+            raise FileNotFoundError("Fakenodo object not found")
         response = {
-            "movie_metadata": dataset.movie_metadata,
-            "status": dataset.status,
-            "doi": dataset.doi
+            "dataset_metadata": fakenodo.dataset.ds_meta_data.to_dict(),
+            "status": fakenodo.status,
         }
         return response
         
     
     def get_doi_versions(self, fakenodo_id):
-        #TO-DO: funcion para listar las versiones de un dataset
-        pass
+        fakenodo = Fakenodo.query.get(fakenodo_id)
+        if not fakenodo:
+            raise FileNotFoundError("Fakenodo object not found")
+        response = {
+            "version-list": fakenodo.dataset.versions.__repr__(),
+            "current-version": fakenodo.dataset.current_version,
+            "doi": fakenodo.dataset.ds_meta_data.dataset_doi,
+        }
+        return response
     
     def checksum(fileName):
         try:
