@@ -1,6 +1,8 @@
+# app/modules/dataset/seeders.py
+
 import os
 import shutil
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 
 from app import db
@@ -26,7 +28,7 @@ class DataSetSeeder(BaseSeeder):
         # 🔹 Crear métricas
         ds_metrics = DSMetrics(number_of_models="5", number_of_features="50")
         db.session.add(ds_metrics)
-        db.session.flush()  # para obtener el ID
+        db.session.flush()
 
         # 🔹 Crear metadatos de datasets
         ds_meta_data_list = []
@@ -45,7 +47,7 @@ class DataSetSeeder(BaseSeeder):
         db.session.add_all(ds_meta_data_list)
         db.session.flush()
 
-        # 🔹 Crear autores de datasets
+        # 🔹 Crear autores
         authors = []
         for i, ds_meta in enumerate(ds_meta_data_list):
             author = Author(
@@ -58,29 +60,44 @@ class DataSetSeeder(BaseSeeder):
         db.session.add_all(authors)
         db.session.flush()
 
-        # 🔹 Crear datasets (heredan de BaseDataset)
+        # 🔹 Crear datasets
         datasets = []
         for i, ds_meta in enumerate(ds_meta_data_list):
             dataset = DataSet(
                 user_id=user1.id if i % 2 == 0 else user2.id,
                 ds_meta_data_id=ds_meta.id,
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(timezone.utc) - timedelta(days=10 - i),
                 dataset_type="uvl",
             )
             datasets.append(dataset)
         db.session.add_all(datasets)
         db.session.flush()
 
-        # 🔹 NUEVO: Crear versiones iniciales para cada dataset
-        versions = []
+        # 🔹 Crear múltiples versiones por dataset
+        all_versions = []
         for dataset in datasets:
-            version = Version(
-                dataset_id=dataset.id,
-                version_number="1.0",
-                created_at=datetime.now(timezone.utc)
-            )
-            versions.append(version)
-        db.session.add_all(versions)
+            version_list = []
+            version_dates = [
+                datetime.now(timezone.utc) - timedelta(days=5),
+                datetime.now(timezone.utc) - timedelta(days=2),
+                datetime.now(timezone.utc),
+            ]
+            version_numbers = ["1.0", "1.1", "2.0"]
+
+            for vn, vd in zip(version_numbers, version_dates):
+                v = Version(
+                    dataset_id=dataset.id,
+                    version_number=vn,
+                    created_at=vd
+                )
+                version_list.append(v)
+
+            all_versions.extend(version_list)
+
+            # Guardar la última versión como la actual
+            dataset.current_version = version_numbers[-1]
+
+        db.session.add_all(all_versions)
         db.session.flush()
 
         # 🔹 Crear metadatos de FeatureModels
@@ -123,7 +140,7 @@ class DataSetSeeder(BaseSeeder):
         db.session.add_all(feature_models)
         db.session.flush()
 
-        # 🔹 NUEVO: Crear archivos físicos y registros Hubfile
+        # 🔹 Crear archivos físicos y registros Hubfile
         load_dotenv()
         working_dir = os.getenv("WORKING_DIR", "")
         src_folder = os.path.join(working_dir, "app", "modules", "dataset", "uvl_examples")
@@ -131,21 +148,15 @@ class DataSetSeeder(BaseSeeder):
         hubfiles = []
         for i, feature_model in enumerate(feature_models):
             file_name = f"file{i + 1}.uvl"
-            
-            # Obtener el dataset y user_id correspondiente
             dataset = datasets[i // 3]
             user_id = dataset.user_id
-            
-            # Crear directorio destino
             dest_folder = os.path.join(working_dir, "uploads", f"user_{user_id}", f"dataset_{dataset.id}")
             os.makedirs(dest_folder, exist_ok=True)
-            
-            # Copiar archivo
+
             src_file = os.path.join(src_folder, file_name)
             dest_file = os.path.join(dest_folder, file_name)
             shutil.copy(src_file, dest_file)
-            
-            # Crear registro Hubfile
+
             hubfile = Hubfile(
                 name=file_name,
                 checksum=f"checksum{i + 1}",
@@ -157,11 +168,11 @@ class DataSetSeeder(BaseSeeder):
         db.session.add_all(hubfiles)
         db.session.flush()
 
-        # 🔹 NUEVO: Actualizar información de archivos en cada dataset
-        # Esto popula las columnas: files (JSON), total_size_bytes, total_size_human
+        # 🔹 Actualizar info de archivos
         for dataset in datasets:
             dataset.update_files_info()
         
         # 🔹 Commit final
         db.session.commit()
-        
+
+        print("✅ DataSetSeeder completado: datasets, versiones y archivos creados.")
