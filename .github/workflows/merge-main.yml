@@ -1,8 +1,3 @@
-# ----------------------------------------------------------------------------
-# Merge Develop → Main Workflow con commits 'chore(release)'
-# Este workflow automatiza el merge a main para lanzar posteriormente el release
-# ----------------------------------------------------------------------------
-
 name: Merge Develop to Main on Release
 
 on:
@@ -10,10 +5,12 @@ on:
     branches:
       - develop
 
+permissions:
+  contents: write
+
 jobs:
   merge-to-main:
     runs-on: ubuntu-latest
-    needs: run-tests
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,7 +21,7 @@ jobs:
         run: |
           LAST_COMMIT=$(git log -1 --pretty=%B)
           echo "Last commit: $LAST_COMMIT"
-          if [[ "$LAST_COMMIT" == chore/release* ]]; then
+          if [[ "$LAST_COMMIT" == "chore(release)"* ]]; then
             echo "trigger=true" >> $GITHUB_OUTPUT
           else
             echo "trigger=false" >> $GITHUB_OUTPUT
@@ -43,15 +40,13 @@ jobs:
   run-codacy:
     name: Run Codacy workflow
     needs: merge-to-main
+    if: needs.merge-to-main.result == 'success'
     uses: ./.github/workflows/codacy.yml
     secrets:
       CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
-  run-tests:
-    name: Run tests
-    uses: ./.github/workflows/tests.yml
-
   run-release-workflow:
     name: Run release generator
     needs: merge-to-main
+    if: needs.merge-to-main.result == 'success'
     uses: ./.github/workflows/release.yml
