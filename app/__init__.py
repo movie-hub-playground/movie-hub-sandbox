@@ -11,12 +11,16 @@ from core.managers.error_handler_manager import ErrorHandlerManager
 from core.managers.logging_manager import LoggingManager
 from core.managers.module_manager import ModuleManager
 
+from flask_mail import Mail
+
 # Load environment variables
 load_dotenv()
 
 # Create the instances
 db = SQLAlchemy()
 migrate = Migrate()
+
+mail = Mail()
 
 
 def create_app(config_name="development"):
@@ -64,6 +68,15 @@ def create_app(config_name="development"):
             "DOMAIN": os.getenv("DOMAIN", "localhost"),
             "APP_VERSION": get_app_version(),
         }
+
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 465))
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'False').lower() == 'true'
+    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'True').lower() == 'true'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+    mail.init_app(app)
 
     return app
 

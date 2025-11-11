@@ -10,6 +10,11 @@ from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
 
+from flask import current_app
+from flask_mail import Message
+from app import mail
+
+
 class AuthenticationService(BaseService):
     def __init__(self):
         super().__init__(UserRepository())
@@ -33,7 +38,7 @@ class AuthenticationService(BaseService):
             session.pop("login_attempts", None)
             session.pop("blocked_until", None)
             return True, self.MAX_ATTEMPTS, 0
-       
+
         attempts += 1
         session["login_attempts"] = attempts
 
@@ -75,6 +80,10 @@ class AuthenticationService(BaseService):
             profile_data["user_id"] = user.id
             self.user_profile_repository.create(**profile_data)
             self.repository.session.commit()
+
+            verification_code = "123456"  # Futuro problema -> crear codigo aleatorio
+            self.send_email(email, verification_code)
+
         except Exception as exc:
             self.repository.session.rollback()
             raise exc
@@ -99,3 +108,29 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    def send_email(self, to_email, verification_code):
+        try:
+            print("=== Email Configuration ===")
+            print(f"MAIL_SERVER: {current_app.config.get('MAIL_SERVER')}")
+            print(f"MAIL_PORT: {current_app.config.get('MAIL_PORT')}")
+            print(f"MAIL_USE_SSL: {current_app.config.get('MAIL_USE_SSL')}")
+            print(f"MAIL_USERNAME: {current_app.config.get('MAIL_USERNAME')}")
+            msg = Message(
+                'Verify your email - MovieHub',
+                sender=current_app.config.get('MAIL_USERNAME'),
+                recipients=[to_email]
+            )
+            msg.body = f'Your verification code is: {verification_code}'
+            msg.html = f'''
+                <h1>Welcome to MovieHub!</h1>
+                <p>Your verification code is: <strong>{verification_code}</strong></p>
+            '''
+            mail.send(msg)
+            print("Email sent successfully!")
+            return True
+
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
+            current_app.logger.error(f"Error sending email: {str(e)}")
+            return False

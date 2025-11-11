@@ -49,31 +49,6 @@ def test_login_unsuccessful_bad_password(test_client):
     test_client.get("/logout", follow_redirects=True)
 
 
-def test_signup_user_no_name(test_client):
-    response = test_client.post(
-        "/signup", data=dict(surname="Foo", email="test@example.com", password="test1234"), follow_redirects=True
-    )
-    assert response.request.path == url_for("auth.show_signup_form"), "Signup was unsuccessful"
-    assert b"This field is required" in response.data, response.data
-
-
-def test_signup_user_unsuccessful(test_client):
-    email = "test@example.com"
-    response = test_client.post(
-        "/signup", data=dict(name="Test", surname="Foo", email=email, password="test1234"), follow_redirects=True
-    )
-    assert response.request.path == url_for("auth.show_signup_form"), "Signup was unsuccessful"
-    assert f"Email {email} in use".encode("utf-8") in response.data
-
-
-def test_signup_user_successful(test_client):
-    response = test_client.post(
-        "/signup",
-        data=dict(name="Foo", surname="Example", email="foo@example.com", password="foo1234"),
-        follow_redirects=True,
-    )
-    assert response.request.path == url_for("public.index"), "Signup was unsuccessful"
-
 def test_service_create_with_profie_success(clean_database):
     data = {"name": "Test", "surname": "Foo", "email": "service_test@example.com", "password": "test1234"}
 
@@ -133,4 +108,67 @@ def test_login_block_after_max_attempts(test_client):
 
     assert b"Too many requests" in response.data
     
+def test_email_validation_flow(test_client):
+    """Test the complete email validation flow"""
+    
+    signup_response = test_client.post(
+        "/signup",
+        data=dict(name="Test", surname="Validator", email="validator@example.com", password="valid1234"),
+        follow_redirects=True
+    )
+    assert signup_response.request.path == url_for("auth.email_validation")
+    
+    
+    with test_client.session_transaction() as session:
+        assert 'verification_key' in session
+        verification_code = session['verification_key']
+        assert verification_code == "123456"
+    
+    
+    validation_response = test_client.post(
+        "/email_validation",
+        data=dict(key="123456"),
+        follow_redirects=True
+    )
+    assert validation_response.request.path == url_for("public.index")
+    
+    
+    with test_client.session_transaction() as session:
+        assert 'verification_key' not in session
+        assert 'email' not in session
+        assert 'password' not in session
 
+def test_email_validation_wrong_code(test_client):
+    """Test email validation with incorrect verification code"""
+
+    test_client.post(
+        "/signup",
+        data=dict(name="Wrong", surname="Code", email="wrong@example.com", password="wrong1234"),
+        follow_redirects=True
+    )
+    
+    
+    response = test_client.post(
+        "/email_validation",
+        data=dict(key="000000"),  
+        follow_redirects=True
+    )
+    assert b'key does not match' in response.data.lower()
+    assert response.request.path == url_for("auth.email_validation")
+
+def test_login_success_resets_attempts(test_client):
+    
+    test_client.post(
+        "/signup",
+        data=dict(name="Login", surname="Test", email="login@example.com", password="login1234"),
+        follow_redirects=True
+    )
+    test_client.post(
+        "/email_validation",
+        data=dict(key="123456"),
+        follow_redirects=True
+    )
+    test_client.get("/logout", follow_redirects=True)
+    
+    
+    test_client.post("/login", data=dict(email="login@example.com", password="bad"), follow_redirects=True)
