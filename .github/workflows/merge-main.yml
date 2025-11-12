@@ -63,7 +63,11 @@ jobs:
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+          GITHUB_REF: refs/heads/main
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo "Git log: $(git log -1 --oneline)"
+          npx semantic-release --branches main
 
   run-render-deploy:
     name: Deploy on render
