@@ -9,7 +9,6 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
-  actions: write
 
 jobs:
   merge-to-main:
@@ -38,8 +37,32 @@ jobs:
           git fetch origin main
           git checkout main
           git merge --no-ff develop -m "Merge develop → main [auto release]"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git main
+          git push origin main
 
+  run-release-workflow:
+    name: Semantic Release
+    needs: merge-to-main
+    if: needs.merge-to-main.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install semantic-release
+        run: |
+          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator conventional-changelog-conventionalcommits
+
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
 
   run-render-deploy:
     name: Deploy on render
