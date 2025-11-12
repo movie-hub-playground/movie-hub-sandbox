@@ -52,8 +52,6 @@ jobs:
     needs: merge-to-main
     if: needs.merge-to-main.result == 'success'
     uses: ./.github/workflows/release.yml
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   run-render-deploy:
     name: Deploy on render
