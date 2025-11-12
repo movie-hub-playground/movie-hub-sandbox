@@ -52,3 +52,20 @@ jobs:
     needs: merge-to-main
     if: needs.merge-to-main.result == 'success'
     uses: ./.github/workflows/release.yml
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  run-render-deploy:
+    name: Deploy on render
+    needs: merge-to-main
+    if: needs.merge-to-main.result == 'success'
+    uses: ./.github/workflows/render.yml
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      MARIADB_HOSTNAME: ${{ secrets.MARIADB_HOSTNAME }}
+      MARIADB_PORT: ${{ secrets.MARIADB_PORT }}
+      MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
+      MARIADB_USER: ${{ secrets.MARIADB_USER }}
+      MARIADB_PASSWORD: ${{ secrets.MARIADB_PASSWORD }}
+      deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+

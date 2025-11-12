@@ -1,6 +1,21 @@
 name: Deploy to Render
 
 on:
+  workflow_call:
+    secrets:
+      MARIADB_HOSTNAME:
+        required: true
+      MARIADB_PORT:
+        required: true
+      MARIADB_DATABASE:
+        required: true
+      MARIADB_USER:
+        required: true
+      MARIADB_PASSWORD:
+        required: true
+      deploy_url:
+        required: true
+
   push:
     branches:
       main
