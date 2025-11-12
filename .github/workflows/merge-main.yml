@@ -39,20 +39,6 @@ jobs:
           git merge --no-ff develop -m "Merge develop → main [auto release]"
           git push origin main
 
-  run-codacy:
-    name: Run Codacy workflow
-    needs: merge-to-main
-    if: needs.merge-to-main.result == 'success'
-    uses: ./.github/workflows/codacy.yml
-    secrets:
-      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-  run-release-workflow:
-    name: Run release generator
-    needs: merge-to-main
-    if: needs.merge-to-main.result == 'success'
-    uses: ./.github/workflows/release.yml
-
   run-render-deploy:
     name: Deploy on render
     needs: merge-to-main
