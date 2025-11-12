@@ -40,34 +40,10 @@ jobs:
           git push origin main
 
   run-release-workflow:
-    name: Semantic Release
+    name: Run release generator
     needs: merge-to-main
     if: needs.merge-to-main.result == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install semantic-release
-        run: |
-          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator conventional-changelog-conventionalcommits
-
-      - name: Run Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: refs/heads/main
-        run: |
-          echo "Current branch: $(git branch --show-current)"
-          echo "Git log: $(git log -1 --oneline)"
-          npx semantic-release --branches main
+    uses: ./.github/workflows/release.yml
 
   run-render-deploy:
     name: Deploy on render
