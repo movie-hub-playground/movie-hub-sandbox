@@ -59,7 +59,6 @@ jobs:
     if: needs.merge-to-main.result == 'success'
     uses: ./.github/workflows/render.yml
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MARIADB_HOSTNAME: ${{ secrets.MARIADB_HOSTNAME }}
       MARIADB_PORT: ${{ secrets.MARIADB_PORT }}
       MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
