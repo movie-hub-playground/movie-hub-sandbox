@@ -37,7 +37,8 @@ jobs:
           git fetch origin main
           git checkout main
           git merge --no-ff develop -m "Merge develop → main [auto release]"
-          git push origin main
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git main
+
 
   run-render-deploy:
     name: Deploy on render
