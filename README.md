@@ -1,5 +1,5 @@
 <div style="text-align: center;">
-  <img src="{{ url_for('static', filename='img/logos/movie-hub-light.png') }}" alt="Logo">
+  <img src="app/static/img/logos/movie-hub-dark.png" alt="Logo" />
 </div>
 
 # uvlhub.io
