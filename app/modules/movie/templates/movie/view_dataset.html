@@ -117,12 +117,17 @@
             </div>
         </div>
         {% endif %}
-        
         <div class="row mb-3 mt-4">
             <div class="col-12">
                 <a href="{{ url_for('movie.download_dataset', dataset_id=dataset.id) }}" class="btn btn-success" style="border-radius: 5px;">
                     <i data-feather="download"></i>
                     Download Dataset ({{ dataset.get_file_total_size_for_human() }})
+                </a>
+                <!-- COMPARE VERSIONS -->
+                <a href="{{ url_for('movie.select_versions', dataset_id=dataset.id) }}" 
+                class="btn btn-warning" style="border-radius: 5px;">
+                    <i data-feather="git-compare"></i>
+                    Compare Versions
                 </a>
             </div>
         </div>
@@ -182,7 +187,11 @@
                             {% endif %}
                             
                             {% if movie.synopsis %}
+<<<<<<< HEAD
                             <p class="text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+=======
+                            <p class="text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+>>>>>>> feature/differences-between-versions
                                 {{ movie.synopsis }}
                             </p>
                             {% endif %}

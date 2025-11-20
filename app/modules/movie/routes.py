@@ -155,3 +155,59 @@ def delete_file():
     TODO
     """
     return jsonify({"message": "File deletion temporarily disabled"}), 501
+
+# SELECT VERSION SCREEN
+@movie_bp.route("/moviedataset/<int:dataset_id>/versions", methods=["GET"])
+def select_versions(dataset_id):
+    """
+    Muestra todas las versiones disponibles de un dataset y permite seleccionar dos para comparar.
+    """
+    dataset = movie_service.get_moviedataset(dataset_id)
+
+    # Versions reales del dataset (tabla Version)
+    versions = sorted(dataset.versions, key=lambda v: v.created_at, reverse=True)
+
+    return render_template(
+        "movie/select_versions.html",
+        dataset=dataset,
+        versions=versions
+    )
+
+
+# JSON: COMPARE TWO VERSIONS
+@movie_bp.route("/moviedataset/version/<int:v1_id>/compare/<int:v2_id>", methods=["GET"])
+def compare_versions_json(v1_id, v2_id):
+    """
+    Compara dos versiones usando snapshots y devuelve JSON.
+    """
+    dataset_v1 = movie_service.load_dataset_from_version(v1_id)
+    dataset_v2 = movie_service.load_dataset_from_version(v2_id)
+
+    comparison = movie_service.compare_datasets(dataset_v1, dataset_v2)
+
+    return jsonify({
+        "version_1": v1_id,
+        "version_2": v2_id,
+        "comparison": comparison
+    })
+
+
+# HTML: COMPARE TWO VERSIONS (VIEW)
+@movie_bp.route("/moviedataset/version/<int:v1_id>/compare/<int:v2_id>/view", methods=["GET"])
+def compare_versions_view(v1_id, v2_id):
+
+    # Cargar versiones reconstruidas desde snapshot
+    v1 = movie_service.load_dataset_from_version(v1_id)
+    v2 = movie_service.load_dataset_from_version(v2_id)
+
+    # Comparación real entre versiones
+    comparison = movie_service.compare_version_ids(v1_id, v2_id)
+
+    return render_template(
+        "movie/compare_versions.html",
+        v1=v1,
+        v2=v2,
+        comparison=comparison
+    )
+
+

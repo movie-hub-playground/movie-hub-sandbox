@@ -127,3 +127,63 @@ def test_download_dataset_not_found(test_client):
         mock_get.return_value = MagicMock(id=1, user_id=1)
         response = test_client.get("/moviedataset/1/download")
         assert response.status_code == 404
+
+
+# ---------- GET /moviedataset/<id>/version/compare ----------
+@patch("app.modules.movie.routes.movie_service.get_moviedataset")
+def test_compare_versions_page_renders(mock_get_dataset, test_client):
+    mock_dataset = MagicMock()
+    mock_dataset.id = 10
+    mock_dataset.ds_meta_data.title = "Dataset test"
+    mock_dataset.versions = []
+    
+    mock_get_dataset.return_value = mock_dataset
+    
+    response = test_client.get("/moviedataset/10/version/compare")
+    assert response.status_code == 200
+    assert b"Select first version" in response.data
+    assert mock_get_dataset.called
+
+# ---------- POST /moviedataset/<id>/version/compare ----------
+@patch("app.modules.movie.routes.movie_service.get_moviedataset")
+def test_compare_versions_post_redirects(mock_get_dataset, test_client):
+    mock_dataset = MagicMock()
+    mock_dataset.id = 10
+    mock_dataset.versions = []
+    mock_get_dataset.return_value = mock_dataset
+
+    response = test_client.post(
+        "/moviedataset/10/version/compare",
+        data={"version_1": "3", "version_2": "5"},
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+    assert "/moviedataset/10/version/compare/3/5/view" in response.location
+
+# ---------- GET /moviedataset/<id>/version/compare/<v1>/<v2>/view ----------
+@patch("app.modules.movie.services.MovieService.load_dataset_from_version")
+def test_compare_version_ids_detects_changes(mock_load):
+    from app.modules.movie.services import MovieService
+
+    mock_v1 = MagicMock()
+    mock_v1.ds_meta_data.title = "Title A"
+    mock_v1.movies = [{"id": 1, "title": "Movie A"}]
+
+    mock_v2 = MagicMock()
+    mock_v2.ds_meta_data.title = "Title B"   # título cambiado
+    mock_v2.movies = [
+        {"id": 1, "title": "Movie A"},
+        {"id": 2, "title": "Movie Added"}
+    ]
+
+    mock_load.side_effect = [mock_v1, mock_v2]
+
+    svc = MovieService()
+    diff = svc.compare_version_ids(1, 2)
+
+    assert "metadata_changes" in diff
+    assert "movies_added" in diff
+    assert diff["metadata_changes"]["title"] == ("Title A", "Title B")
+    assert diff["movies_added"][0]["title"] == "Movie Added"
+
