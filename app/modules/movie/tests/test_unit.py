@@ -127,3 +127,59 @@ def test_download_dataset_not_found(test_client):
         mock_get.return_value = MagicMock(id=1, user_id=1)
         response = test_client.get("/moviedataset/1/download")
         assert response.status_code == 404
+
+# ---------- GET /moviedataset/<id>/versions ----------
+@patch("app.modules.movie.routes.movie_service.get_moviedataset")
+def test_compare_versions_page_renders(mock_get_dataset, test_client):
+    from datetime import datetime, timedelta
+
+    mock_dataset = MagicMock()
+    mock_dataset.id = 10
+    mock_dataset.ds_meta_data.title = "Dataset test"
+
+    mock_dataset.versions = [
+        MagicMock(id=1, version_number="1", created_at=datetime.utcnow()),
+        MagicMock(id=2, version_number="2", created_at=datetime.utcnow() - timedelta(minutes=1)),
+    ]
+
+    mock_get_dataset.return_value = mock_dataset
+
+    response = test_client.get("/moviedataset/10/versions")
+    assert response.status_code == 200
+    assert b"Select two versions to compare" in response.data
+
+# ---------- compare_version_ids ----------
+@patch("app.modules.movie.services.MovieService.load_dataset_from_version")
+def test_compare_version_ids_detects_changes(mock_load):
+    from app.modules.movie.services import MovieService
+
+    class FakeMeta:
+        def __init__(self, title):
+            self.title = title
+
+    class FakeMovie:
+        def __init__(self, id, title):
+            self.id = id
+            self.title = title
+
+    mock_v1 = MagicMock()
+    mock_v1.ds_meta_data = FakeMeta("Title A")
+    mock_v1.movies = [FakeMovie(1, "Movie A")]
+
+    mock_v2 = MagicMock()
+    mock_v2.ds_meta_data = FakeMeta("Title B")
+    mock_v2.movies = [
+        FakeMovie(1, "Movie A"),
+        FakeMovie(2, "Movie Added")
+    ]
+
+    mock_load.side_effect = [mock_v1, mock_v2]
+
+    svc = MovieService()
+    diff = svc.compare_version_ids(1, 2)
+
+    # Assert cambios detectados
+    assert "title" in diff["metadata_changed"]
+
+    # movies_added devuelve DICTS, no objetos
+    assert diff["movies_added"][0]["title"] == "Movie Added"

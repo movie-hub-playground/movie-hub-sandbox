@@ -1,0 +1,67 @@
+{% extends "base_template.html" %}
+
+{% block title %}Compare Versions{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width: 700px;">
+
+    <h2 class="mb-4 text-center">
+        Compare Versions for <span class="text-primary">{{ dataset.ds_meta_data.title }}</span>
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="alert alert-info text-center">
+                Select two versions to compare.
+            </div>
+
+            <!-- Select A -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Select first version:</strong></label>
+                <select class="form-select" id="versionA">
+                    <option value="" disabled selected>Choose a version...</option>
+                    {% for v in versions %}
+                    <option value="{{ v.id }}">Version {{ v.version_number }} — {{ v.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Select B -->
+            <div class="mb-4">
+                <label class="form-label"><strong>Select second version:</strong></label>
+                <select class="form-select" id="versionB">
+                    <option value="" disabled selected>Choose a version...</option>
+                    {% for v in versions %}
+                    <option value="{{ v.id }}">Version {{ v.version_number }} — {{ v.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button class="btn btn-warning w-100" id="compareBtn">
+                <i data-feather="git-compare"></i> Compare Versions
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("compareBtn").addEventListener("click", function() {
+    const a = document.getElementById("versionA").value;
+    const b = document.getElementById("versionB").value;
+
+    if (!a || !b) {
+        alert("Please select two versions.");
+        return;
+    }
+    if (a === b) {
+        alert("Please select two different versions.");
+        return;
+    }
+
+    window.location.href = `/moviedataset/version/${a}/compare/${b}/view`;
+});
+</script>
+
+{% endblock %}
