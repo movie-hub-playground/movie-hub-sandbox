@@ -1,6 +1,6 @@
-<p style="text-align:center; margin-top:-110px; margin-bottom:-110px;">
+<div style="text-align: center">
   <img src="app/static/img/logos/movie-hub-dark.png" alt="Logo" />
-</p>
+</div>
 
 # 🎬 Movie-Hub
 
