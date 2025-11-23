@@ -1,7 +1,9 @@
 name: Auto Release
 
 on:
-  workflow_call:
+  push:
+    branches:
+      main
 
 
 permissions:
