@@ -12,9 +12,25 @@ permissions:
   pull-requests: write
 
 jobs:
+
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.check.outputs.ok }}
+    steps:
+      - id: check
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ ^chore\(release\): ]]; then
+            echo "ok=true" >> $GITHUB_OUTPUT
+          else
+            echo "ok=false" >> $GITHUB_OUTPUT
+          fi
+
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
+    if: needs.check-commit.outputs.ok == 'true'
+    needs: check-commit
 
     steps:
       - name: Checkout code
