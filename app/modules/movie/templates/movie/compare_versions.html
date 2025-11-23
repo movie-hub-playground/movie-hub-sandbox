@@ -1,0 +1,135 @@
+{% extends "base_template.html" %}
+
+{% block title %}Compare Dataset Versions{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        Compare Versions:
+        <span class="text-primary">{{ v1.ds_meta_data.title }}</span>
+        <small class="text-muted">(v{{ v1.id }})</small>
+        vs
+        <span class="text-primary">{{ v2.ds_meta_data.title }}</span>
+        <small class="text-muted">(v{{ v2.id }})</small>
+    </h2>
+
+    <!-- METADATA CHANGES -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <strong>Metadata Changes</strong>
+        </div>
+        <div class="card-body">
+
+            {% if comparison.metadata_changed %}
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Field</th>
+                            <th>Old</th>
+                            <th>New</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, change in comparison.metadata_changed.items() %}
+                        <tr>
+                            <td><strong>{{ key }}</strong></td>
+                            <td class="text-danger">{{ change.old }}</td>
+                            <td class="text-success">{{ change.new }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No metadata changes detected.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MOVIES ADDED -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <strong>Movies Added</strong>
+        </div>
+        <div class="card-body">
+            {% if comparison.movies_added %}
+                <ul>
+                    {% for movie in comparison.movies_added %}
+                        <li>
+                            <strong>{{ movie.title }}</strong>
+                            {% if movie.year %} ({{ movie.year }}) {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No movies added.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MOVIES REMOVED -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <strong>Movies Removed</strong>
+        </div>
+        <div class="card-body">
+            {% if comparison.movies_removed %}
+                <ul>
+                    {% for movie in comparison.movies_removed %}
+                        <li>
+                            <strong>{{ movie.title }}</strong>
+                            {% if movie.year %} ({{ movie.year }}) {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No movies removed.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MOVIES MODIFIED -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <strong>Movies Modified</strong>
+        </div>
+        <div class="card-body">
+
+            {% if comparison.movies_modified %}
+                {% for item in comparison.movies_modified %}
+                    <div class="border rounded p-3 mb-3">
+                        <h5 class="mb-2">
+                            Movie ID: {{ item.movie_id }}
+                        </h5>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Old</th>
+                                    <th>New</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for key, values in item.changes.items() %}
+                                <tr>
+                                    <td><strong>{{ key }}</strong></td>
+                                    <td class="text-danger">{{ values.old }}</td>
+                                    <td class="text-success">{{ values.new }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No movie modifications detected.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

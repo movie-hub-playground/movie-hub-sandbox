@@ -9,7 +9,8 @@ class Version(db.Model):
     dataset_id = db.Column(db.Integer, db.ForeignKey("base_dataset.id"), nullable=False)
     version_number = db.Column(db.String(20), nullable=False)  # por ejemplo "1.0", "1.1", "2.0"
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
+    snapshot_path = db.Column(db.String(255), nullable=True)
+    
     dataset = db.relationship("BaseDataset", back_populates="versions")
 
     def __repr__(self):

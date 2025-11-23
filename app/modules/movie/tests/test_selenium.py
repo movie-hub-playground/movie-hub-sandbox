@@ -57,4 +57,158 @@ class TestDefaultSuite():
     self.driver.find_element(By.LINK_TEXT, "My Datasets").click()
     self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
     self.driver.find_element(By.LINK_TEXT, "Manage Dataset").click()
-  
+
+  def test_open_compare_versions_page(self):
+    # Ir a la lista
+    self.driver.get("http://localhost:5000/moviedataset/list")
+    self.driver.maximize_window()
+    time.sleep(1)
+
+    # Entrar en Sci-Fi
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    time.sleep(1)
+
+    # Entrar a "Compare Versions"
+    self.driver.find_element(By.LINK_TEXT, "Compare Versions").click()
+    time.sleep(1)
+
+    # Verificar que carga el formulario
+    assert "Select two versions to compare" in self.driver.page_source
+
+  def test_compare_two_versions(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.maximize_window()
+
+    # --- Login ---
+    self.driver.find_element(By.LINK_TEXT, "Login").click()
+    time.sleep(1)
+    self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
+    self.driver.find_element(By.ID, "password").send_keys("1234")
+    self.driver.find_element(By.ID, "submit").click()
+    time.sleep(1)
+
+    # --- Ir a dataset ---
+    self.driver.get("http://localhost:5000/moviedataset/list")
+    time.sleep(1)
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    time.sleep(1)
+
+    # --- Ir a Compare Versions ---
+    self.driver.find_element(By.LINK_TEXT, "Compare Versions").click()
+    time.sleep(1)
+
+    # --- Seleccionar versiones ---
+    select_v1 = self.driver.find_element(By.ID, "version_1")
+    select_v1.click()
+    time.sleep(0.3)
+    select_v1.find_elements(By.TAG_NAME, "option")[1].click()  # Selecciona versión 1 o 2
+
+    select_v2 = self.driver.find_element(By.ID, "version_2")
+    select_v2.click()
+    time.sleep(0.3)
+    select_v2.find_elements(By.TAG_NAME, "option")[2].click()  # Selecciona otra versión
+
+    # --- Comparar ---
+    self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+    time.sleep(2)
+
+    # --- Verificar que se muestran resultados ---
+    assert "Compare Versions:" in self.driver.page_source
+
+  def test_compare_without_selection(self):
+    self.driver.get("http://localhost:5000/moviedataset/list")
+    self.driver.maximize_window()
+    time.sleep(1)
+
+    # Ir a dataset
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    time.sleep(1)
+
+    # Abrir Compare Versions
+    self.driver.find_element(By.LINK_TEXT, "Compare Versions").click()
+    time.sleep(1)
+
+    # Enviar formulario SIN seleccionar versiones
+    self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+    time.sleep(1)
+
+    # Debe mostrarse un mensaje de error
+    assert "You must select two versions" in self.driver.page_source or \
+           "Select two versions" in self.driver.page_source
+
+  def test_compare_same_version_error(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.maximize_window()
+
+    # Login
+    self.driver.find_element(By.LINK_TEXT, "Login").click()
+    time.sleep(1)
+    self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
+    self.driver.find_element(By.ID, "password").send_keys("1234")
+    self.driver.find_element(By.ID, "submit").click()
+    time.sleep(1)
+
+    # Ir al dataset
+    self.driver.get("http://localhost:5000/moviedataset/list")
+    time.sleep(1)
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    time.sleep(1)
+
+    # Abrir Compare Versions
+    self.driver.find_element(By.LINK_TEXT, "Compare Versions").click()
+    time.sleep(1)
+
+    # Seleccionar la misma versión en ambos selects
+    v1 = self.driver.find_element(By.ID, "version_1")
+    v2 = self.driver.find_element(By.ID, "version_2")
+
+    v1.find_elements(By.TAG_NAME, "option")[1].click()
+    time.sleep(0.3)
+    v2.find_elements(By.TAG_NAME, "option")[1].click()
+    time.sleep(0.3)
+
+    # Enviar
+    self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+    time.sleep(1)
+
+    # Comprobar mensaje esperado
+    assert "Versions must be different" in self.driver.page_source
+
+  def test_compare_versions_shows_changes(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.maximize_window()
+
+    # Login
+    self.driver.find_element(By.LINK_TEXT, "Login").click()
+    time.sleep(1)
+    self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
+    self.driver.find_element(By.ID, "password").send_keys("1234")
+    self.driver.find_element(By.ID, "submit").click()
+    time.sleep(1)
+
+    # Ir al dataset Sci-Fi
+    self.driver.get("http://localhost:5000/moviedataset/list")
+    time.sleep(1)
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    time.sleep(1)
+
+    # Abrir Compare Versions
+    self.driver.find_element(By.LINK_TEXT, "Compare Versions").click()
+    time.sleep(1)
+
+    # Seleccionar versión 1 y versión 3 (donde hay cambios reales)
+    v1 = self.driver.find_element(By.ID, "version_1")
+    v2 = self.driver.find_element(By.ID, "version_2")
+
+    v1.find_elements(By.TAG_NAME, "option")[1].click()  # v1
+    time.sleep(0.3)
+    v2.find_elements(By.TAG_NAME, "option")[3].click()  # v3
+    time.sleep(0.3)
+
+    # Comparar
+    self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+    time.sleep(2)
+
+    # Comprobar que aparecen diferencias
+    assert "Differences" in self.driver.page_source
+    assert "Interstellar" in self.driver.page_source or "Updated" in self.driver.page_source
