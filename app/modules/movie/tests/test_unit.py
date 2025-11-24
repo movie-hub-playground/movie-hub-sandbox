@@ -57,22 +57,37 @@ def test_my_datasets_requires_login(mock_get_by_user, test_client):
 
 
 # ---------- GET /moviedataset/<id> ----------
+from unittest.mock import patch, MagicMock
+
+@patch("app.modules.movie.routes.ds_view_record_service.create_cookie")
 @patch("app.modules.movie.routes.movie_service.get_moviedataset")
-def test_view_dataset(mock_get_dataset, test_client):
-    # Crear mock completo del dataset
+def test_view_dataset(mock_get_dataset, mock_create_cookie, test_client):
+    # Mock del dataset
     mock_dataset = MagicMock()
     mock_dataset.id = 123
     mock_dataset.ds_meta_data.title = "Mock Dataset"
     mock_dataset.ds_meta_data.description = "Mock Description"
     mock_dataset.ds_meta_data.tags = "test, mock"
-    mock_dataset.movies = []  # Lista vacía de películas
-    
+    mock_dataset.movies = []
+
     mock_get_dataset.return_value = mock_dataset
-    
+
+    # Mock de create_cookie para que no intente modificar BD
+    mock_create_cookie.return_value = "fake-cookie-value"
+
     response = test_client.get("/moviedataset/123")
+
+    # --- Asserts ---
     assert response.status_code == 200
     assert b"Mock Dataset" in response.data
+
     mock_get_dataset.assert_called_once_with(123)
+    mock_create_cookie.assert_called_once_with(dataset=mock_dataset)
+
+    # También podemos validar que la cookie se setea:
+    assert response.headers.get("Set-Cookie") is not None
+    assert "view_cookie=fake-cookie-value" in response.headers.get("Set-Cookie")
+
 
 
 # ---------- GET /movie/<id> ----------
@@ -101,24 +116,46 @@ def test_view_movie(mock_get_movie, test_client):
 
 # ---------- GET /moviedataset/<id>/download ----------
 @patch("app.modules.movie.routes.movie_service.get_moviedataset")
-def test_download_dataset_creates_zip(mock_get_dataset, test_client, tmp_path):
+@patch("app.modules.movie.routes.DSDownloadRecordService")
+@patch("app.modules.movie.routes.DSDownloadRecord")
+def test_download_dataset_creates_zip(mock_record_model, mock_record_service, mock_get_dataset, test_client, tmp_path):
+    # --- Mock dataset ---
     dataset_mock = MagicMock()
     dataset_mock.id = 5
     dataset_mock.user_id = 99
     mock_get_dataset.return_value = dataset_mock
 
+    # --- Crear carpeta y archivo en tmp_path ---
     folder = tmp_path / "uploads" / "user_99" / "dataset_5"
     folder.mkdir(parents=True)
     (folder / "test.txt").write_text("contenido")
 
+    # --- Mock de query para que no toque base de datos ---
+    mock_record_model.query.filter_by.return_value.first.return_value = None
+
+    # --- Mock os.path.exists + os.walk ---
     with patch("app.modules.movie.routes.os.path.exists", return_value=True), \
          patch("app.modules.movie.routes.os.walk") as mockwalk:
+        
         mockwalk.return_value = [(str(folder), [], ["test.txt"])]
-        response = test_client.get("/moviedataset/5/download")
 
+        response: Response = test_client.get("/moviedataset/5/download")
+
+    # ---- Assertions ----
     assert response.status_code == 200
     assert response.mimetype == "application/zip"
+
+    # Se llamó al servicio para obtener el dataset
     mock_get_dataset.assert_called_once_with(5)
+
+    # Se debería haber intentado crear un record porque no existía antes
+    mock_record_service.return_value.create.assert_called_once()
+
+    # Aseguramos que el zip se haya enviado
+    content_disp = response.headers.get("Content-Disposition")
+    assert "attachment" in content_disp
+    assert "movie_dataset_5.zip" in content_disp
+
 
 
 def test_download_dataset_not_found(test_client):

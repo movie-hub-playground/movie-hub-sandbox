@@ -1,10 +1,12 @@
 import os
-import shutil
 import tempfile
+from datetime import datetime, timezone
+import uuid
 from zipfile import ZipFile
 
 from flask import (
     abort,
+    make_response,
     jsonify,
     redirect,
     render_template,
@@ -17,6 +19,23 @@ from flask_login import current_user, login_required
 from app.modules.movie import movie_bp
 from app.modules.movie.forms import MovieForm
 from app.modules.movie.services import MovieService
+from app.modules.dataset.services import (
+    AuthorService,
+    DataSetService,
+    DOIMappingService,
+    DSDownloadRecordService,
+    DSMetaDataService,
+    DSViewRecordService,
+)
+from app.modules.dataset.models import DSDownloadRecord
+from app.modules.dataset.models import DSViewRecord
+
+dataset_service = DataSetService()
+author_service = AuthorService()
+dsmetadata_service = DSMetaDataService()
+doi_mapping_service = DOIMappingService()
+ds_view_record_service = DSViewRecordService()
+
 
 movie_service = MovieService()
 
@@ -51,10 +70,11 @@ def my_datasets():
 def view_dataset(dataset_id):
     """View a movie dataset with all its movies (public view)"""
     dataset = movie_service.get_moviedataset(dataset_id)
-    return render_template(
-        "movie/view_dataset.html",
-        dataset=dataset
-    )
+    user_cookie = ds_view_record_service.create_cookie(dataset=dataset)
+    resp = make_response(render_template("movie/view_dataset.html", dataset=dataset))
+    resp.set_cookie("view_cookie", user_cookie)
+    
+    return resp
 
 # Manage
 @movie_bp.route("/moviedataset/<int:dataset_id>/manage", methods=["GET"])
@@ -104,13 +124,41 @@ def download_dataset(dataset_id):
                     full_path,
                     arcname=os.path.join(os.path.basename(zip_path[:-4]), relative_path),
                 )
+                
+    user_cookie = request.cookies.get("download_cookie")
+    if not user_cookie:
+        user_cookie = str(uuid.uuid4())  # Generate a new unique identifier if it does not exist
+        # Save the cookie to the user's browser
+        resp = send_from_directory(
+            temp_dir,
+            f"movie_dataset_{dataset_id}.zip",
+            as_attachment=True,
+            mimetype="application/zip",
+        )
+        resp.set_cookie("download_cookie", user_cookie)
+    else:
+        resp = send_from_directory(
+            temp_dir,
+            f"movie_dataset_{dataset_id}.zip",
+            as_attachment=True,
+            mimetype="application/zip",
+        )
 
-    resp = send_from_directory(
-        temp_dir,
-        f"movie_dataset_{dataset_id}.zip",
-        as_attachment=True,
-        mimetype="application/zip",
-    )
+    # Check if the download record already exists for this cookie
+    existing_record = DSDownloadRecord.query.filter_by(
+        user_id=current_user.id if current_user.is_authenticated else None,
+        dataset_id=dataset_id,
+        download_cookie=user_cookie,
+    ).first()
+
+    if not existing_record:
+        # Record the download in your database
+        DSDownloadRecordService().create(
+            user_id=current_user.id if current_user.is_authenticated else None,
+            dataset_id=dataset_id,
+            download_date=datetime.now(timezone.utc),
+            download_cookie=user_cookie,
+        )
 
     return resp
 

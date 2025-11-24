@@ -9,53 +9,48 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from core.selenium.common import initialize_driver
 
 class TestDefaultSuite():
   def setup_method(self, method):
-    self.driver = webdriver.Chrome()
+    self.driver = initialize_driver()
     self.vars = {}
   
   def teardown_method(self, method):
     self.driver.quit()
   
-  def test_getmovie(self):
-    self.driver.get("http://localhost:5000/moviedataset/list")
-    self.driver.maximize_window() #Este tiene que hacerse a pantalla completa, si no falla
-    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
-    self.driver.find_element(By.CSS_SELECTOR, ".col-lg-3:nth-child(2) .movie-poster").click()
+  def test_exploredatasets(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.set_window_size(902, 903)
+    self.driver.find_element(By.LINK_TEXT, "Explore more datasets").click()
+  
+  def test_getdatasetdetails(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.set_window_size(902, 903)
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces (Updated)").click()
   
   def test_getmydatasets(self):
     self.driver.get("http://localhost:5000/")
-    self.driver.set_window_size(746, 683)
+    self.driver.set_window_size(902, 903)
     self.driver.find_element(By.LINK_TEXT, "Login").click()
     self.driver.find_element(By.ID, "email").click()
     self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
     self.driver.find_element(By.ID, "password").click()
     self.driver.find_element(By.ID, "password").send_keys("1234")
     self.driver.find_element(By.ID, "submit").click()
-    self.driver.get("http://localhost:5000/moviedataset/list")
-    time.sleep(1)
-    self.driver.find_element(By.LINK_TEXT, "My Datasets").click()
-  
-  def test_getone(self):
-    self.driver.get("http://localhost:5000/moviedataset/list")
-    self.driver.set_window_size(746, 683)
-    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    self.driver.get("http://localhost:5000/moviedataset/my-datasets")
   
   def test_managedataset(self):
     self.driver.get("http://localhost:5000/")
-    self.driver.set_window_size(746, 683)
+    self.driver.set_window_size(902, 903)
     self.driver.find_element(By.LINK_TEXT, "Login").click()
     self.driver.find_element(By.ID, "email").click()
     self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
     self.driver.find_element(By.ID, "password").click()
     self.driver.find_element(By.ID, "password").send_keys("1234")
     self.driver.find_element(By.ID, "submit").click()
-    time.sleep(0.5)
-    self.driver.get("http://localhost:5000/moviedataset/list")
-    time.sleep(1)
-    self.driver.find_element(By.LINK_TEXT, "My Datasets").click()
-    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces Collection").click()
+    self.driver.get("http://localhost:5000/moviedataset/my-datasets")
+    self.driver.find_element(By.LINK_TEXT, "🎬 Sci-Fi Masterpieces (Updated)").click()
     self.driver.find_element(By.LINK_TEXT, "Manage Dataset").click()
 
   def test_open_compare_versions_page(self):

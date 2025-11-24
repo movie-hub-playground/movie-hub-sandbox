@@ -1,5 +1,4 @@
 import os
-import shutil
 from flask import abort
 from app import db
 from app.modules.movie.models import MovieDataset, Movie
@@ -7,6 +6,10 @@ import json
 from types import SimpleNamespace
 from app.modules.dataset.base_dataset import Version
 from datetime import datetime
+from core.services.BaseService import BaseService
+from app.modules.movie.repositories import MovieRepository
+from app.modules.dataset.repositories import DSDownloadRecordRepository, DSViewRecordRepository
+
 
 class SnapshotDataset:
     """Dataset reconstruido desde snapshot sin usar SQLAlchemy."""
@@ -21,7 +24,17 @@ class SnapshotMovie:
         for k, v in data.items():
             setattr(self, k, v)
 
-class MovieService:
+class MovieService(BaseService):
+    def __init__(self):
+        super().__init__(MovieRepository())
+        self.dsdownloadrecord_repository = DSDownloadRecordRepository()
+        self.dsviewrecord_repostory = DSViewRecordRepository()
+    
+    def total_dataset_downloads(self) -> int:
+        return self.dsdownloadrecord_repository.total_dataset_downloads()
+
+    def total_dataset_views(self) -> int:
+        return self.dsviewrecord_repostory.total_dataset_views()
     
     def get_moviedataset(self, dataset_id):
         dataset = MovieDataset.query.get(dataset_id)
