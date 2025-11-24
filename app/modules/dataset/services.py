@@ -6,7 +6,6 @@ import uuid
 from typing import Optional
 
 from flask import request, abort
-import difflib
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import DataSet, DSMetaData, DSViewRecord
@@ -218,6 +217,23 @@ class AuthorService(BaseService):
 class DSDownloadRecordService(BaseService):
     def __init__(self):
         super().__init__(DSDownloadRecordRepository())
+        
+    def top_downloaded_datasets_last_month(self, limit: int = 3) -> list:
+        """
+        Obtiene los datasets más descargados del último mes.
+        
+        Returns:
+            list: Lista de diccionarios con dataset_id y download_count
+        """
+        results = self.repository.top_downloaded_datasets_last_month(limit)
+                
+        return [
+            {
+                'dataset_id': dataset_id,
+                'download_count': count
+            }
+            for dataset_id, count in results
+        ]
 
 
 class DSMetaDataService(BaseService):
