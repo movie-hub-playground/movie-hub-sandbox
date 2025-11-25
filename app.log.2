@@ -1,69 +1,11 @@
-2025-11-10 18:34:16,095 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+2025-11-11 01:20:17,544 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 27, in create_fakenodo
-    deposition = self.repository.create_new_movie(metadata=dataset_metadata,
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 24, in create_fakenodo
+    deposition = self.repository.create_new_movie(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/repositories.py", line 10, in create_new_movie
-    return self.create(dataset=metadata, doi=doi)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/core/repositories/BaseRepository.py", line 14, in create
-    instance: T = self.model(**kwargs)
-                  ^^^^^^^^^^^^^^^^^^^^
-  File "<string>", line 4, in __init__
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 571, in _initialize_instance
-    with util.safe_reraise():
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
-    raise exc_value.with_traceback(exc_tb)
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 569, in _initialize_instance
-    manager.original_init(*mixed[1:], **kwargs)
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py", line 2182, in _declarative_constructor
-    setattr(self, k, kwargs[k])
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py", line 540, in __set__
-    self.impl.set(
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py", line 1477, in set
-    value = self.fire_replace_event(state, dict_, value, old, initiator)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py", line 1516, in fire_replace_event
-    value = fn(
-            ^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py", line 2174, in emit_backref_from_scalar_set_event
-    child_impl = child_state.manager[key].impl
-                 ~~~~~~~~~~~~~~~~~~~^^^^^
-KeyError: 'fakenodo'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 36, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: 'fakenodo'
-2025-11-10 18:34:55,877 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 27, in create_fakenodo
-    deposition = self.repository.create_new_movie(metadata=dataset_metadata,
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 36, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
-2025-11-10 18:38:53,064 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 27, in create_fakenodo
-    deposition = self.repository.create_new_movie(movie_metadata=dataset_metadata,
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/repositories.py", line 10, in create_new_movie
-    return self.create(movie_metadata=movie_metadata, doi=doi)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    return self.create(metadata=dataset_metadata, doi=doi)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/core/repositories/BaseRepository.py", line 14, in create
     instance: T = self.model(**kwargs)
                   ^^^^^^^^^^^^^^^^^^^^
@@ -76,46 +18,140 @@ Traceback (most recent call last):
     manager.original_init(*mixed[1:], **kwargs)
   File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py", line 2179, in _declarative_constructor
     raise TypeError(
-TypeError: 'movie_metadata' is an invalid keyword argument for Fakenodo
+TypeError: 'doi' is an invalid keyword argument for Fakenodo
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
   File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
+    fakenodo_response = service.create_fakenodo(movie_dataset)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 34, in create_fakenodo
+    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
+Exception: Failed to create deposition in Fakenodo with error: 'doi' is an invalid keyword argument for Fakenodo
+2025-11-11 01:26:59,016 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+Traceback (most recent call last):
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 37, in create
+    return jsonify({
+           ^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type DSMetaData is not JSON serializable
+2025-11-11 01:35:46,976 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+Traceback (most recent call last):
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 39, in create_fakenodo
+    return jsonify({
+           ^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type DSMetaData is not JSON serializable
+2025-11-11 01:38:14,610 - app.modules.fakenodo.services - ERROR - Error creating Fakenodo record.
+Traceback (most recent call last):
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 30, in create_fakenodo
+    "metadata": jsonify(dataset.ds_meta_data)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type DSMetaData is not JSON serializable
+2025-11-11 01:38:14,611 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+Traceback (most recent call last):
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 30, in create_fakenodo
+    "metadata": jsonify(dataset.ds_meta_data)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type DSMetaData is not JSON serializable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 37, in create_fakenodo
     fakenodo_response = service.create_fakenodo(movie_dataset)
                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 37, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: 'movie_metadata' is an invalid keyword argument for Fakenodo
-2025-11-11 01:05:11,278 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 25, in create_fakenodo
-    deposition = self.repository.create_new_movie(metadata=dataset_metadata, doi=dataset_doi)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 29, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
-2025-11-11 01:16:51,738 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 25, in create_fakenodo
-    deposition = self.repository.create_new_movie(metadata=dataset_metadata, doi=dataset_doi)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 29, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: FakenodoRepository.create_new_movie() got an unexpected keyword argument 'metadata'
+    raise Exception(f"Failed to create Fakenodo record: {str(error)}")
+Exception: Failed to create Fakenodo record: Object of type DSMetaData is not JSON serializable

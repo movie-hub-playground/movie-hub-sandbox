@@ -23,16 +23,22 @@ def show_signup_form():
 
         try:
             user = authentication_service.create_with_profile(**form.data)
-            # Store email and password in session
+            
+            # Generate random verification code
+            verification_code = authentication_service.generate_verification_code()
+            
             session['email'] = email
             session['password'] = form.password.data
-            # Generate and store verification code
-            verification_code = "123456"  # For testing
             session['verification_code'] = verification_code
-            # Send verification email
-            authentication_service.send_email(email, verification_code)
-            # Redirect to email validation page
-            print(f"Redirecting to email validation for {email}")  # Debug log
+            
+            try:
+                authentication_service.send_email(email, verification_code)
+                print(f"Verification code sent to {email}: {verification_code}")
+            except Exception as e:
+                print(f"Error sending email: {e}")
+                print(f"Verification code for {email}: {verification_code}")
+            
+            print(f"Redirecting to email validation for {email}")
             return redirect(url_for('auth.email_validation'))
         except Exception as exc:
             print(f"Error in signup: {exc}")  # Debug log
@@ -80,7 +86,7 @@ def email_validation():
 
     if request.method == 'POST':
         entered_key = form.key.data.strip()
-        stored_key = session.get('verification_key')
+        stored_key = session.get('verification_code')
         print(f"Entered key: {entered_key}")
         print(f"Stored key: {stored_key}")
 
@@ -90,7 +96,7 @@ def email_validation():
 
             session.pop('email', None)
             session.pop('password', None)
-            session.pop('verification_key', None)
+            session.pop('verification_code', None)
             return response
 
         return render_template(
@@ -98,12 +104,6 @@ def email_validation():
             form=form,
             error='The key does not match'
         )
-
-    if request.method == 'GET':
-        verification_key = "123456"
-        session['verification_key'] = verification_key
-        authentication_service.send_email(email, verification_key)
-        
 
     return render_template('auth/email_validation_form.html', form=form, email=email)
 

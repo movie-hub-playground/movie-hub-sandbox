@@ -1,157 +1,112 @@
-2025-11-11 01:20:17,544 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+2025-11-11 00:52:11,357 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 24, in create_fakenodo
-    deposition = self.repository.create_new_movie(
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/repositories.py", line 10, in create_new_movie
-    return self.create(metadata=dataset_metadata, doi=doi)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/core/repositories/BaseRepository.py", line 14, in create
-    instance: T = self.model(**kwargs)
-                  ^^^^^^^^^^^^^^^^^^^^
-  File "<string>", line 4, in __init__
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 571, in _initialize_instance
-    with util.safe_reraise():
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
-    raise exc_value.with_traceback(exc_tb)
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 569, in _initialize_instance
-    manager.original_init(*mixed[1:], **kwargs)
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py", line 2179, in _declarative_constructor
-    raise TypeError(
-TypeError: 'doi' is an invalid keyword argument for Fakenodo
-
-During handling of the above exception, another exception occurred:
-
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 00:54:24,317 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 35, in create
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 34, in create_fakenodo
-    raise Exception(f"Failed to create deposition in Fakenodo with error: {str(error400)}")
-Exception: Failed to create deposition in Fakenodo with error: 'doi' is an invalid keyword argument for Fakenodo
-2025-11-11 01:26:59,016 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 01:06:57,155 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 37, in create
-    return jsonify({
-           ^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
-    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
-    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
-    return json.dumps(obj, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
-    **kw).encode(obj)
-          ^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
-    chunks = list(chunks)
-             ^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
-    yield from _iterencode_dict(o, _current_indent_level)
-  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
-    yield from chunks
-  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
-    yield from chunks
-  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
-    o = _default(o)
-        ^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
-    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
-TypeError: Object of type DSMetaData is not JSON serializable
-2025-11-11 01:35:46,976 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 01:09:16,506 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 39, in create_fakenodo
-    return jsonify({
-           ^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
-    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
-    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
-    return json.dumps(obj, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
-    **kw).encode(obj)
-          ^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
-    chunks = list(chunks)
-             ^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
-    yield from _iterencode_dict(o, _current_indent_level)
-  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
-    yield from chunks
-  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
-    yield from chunks
-  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
-    o = _default(o)
-        ^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
-    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
-TypeError: Object of type DSMetaData is not JSON serializable
-2025-11-11 01:38:14,610 - app.modules.fakenodo.services - ERROR - Error creating Fakenodo record.
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 09:05:36,713 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 30, in create_fakenodo
-    "metadata": jsonify(dataset.ds_meta_data)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
-    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
-    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
-    return json.dumps(obj, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
-    **kw).encode(obj)
-          ^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
-    chunks = list(chunks)
-             ^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
-    o = _default(o)
-        ^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
-    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
-TypeError: Object of type DSMetaData is not JSON serializable
-2025-11-11 01:38:14,611 - app.modules.fakenodo.routes - ERROR - Error creating MovieDataset in Fakenodo.
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 09:07:37,745 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 30, in create_fakenodo
-    "metadata": jsonify(dataset.ds_meta_data)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/__init__.py", line 170, in jsonify
-    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 214, in response
-    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 179, in dumps
-    return json.dumps(obj, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
-    **kw).encode(obj)
-          ^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
-    chunks = list(chunks)
-             ^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
-    o = _default(o)
-        ^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/venv/lib/python3.12/site-packages/flask/json/provider.py", line 121, in _default
-    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
-TypeError: Object of type DSMetaData is not JSON serializable
-
-During handling of the above exception, another exception occurred:
-
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 09:29:48,886 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
 Traceback (most recent call last):
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/routes.py", line 37, in create_fakenodo
-    fakenodo_response = service.create_fakenodo(movie_dataset)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/dar-o-rom-n/Escritorio/proyecto/movie-hub/app/modules/fakenodo/services.py", line 37, in create_fakenodo
-    raise Exception(f"Failed to create Fakenodo record: {str(error)}")
-Exception: Failed to create Fakenodo record: Object of type DSMetaData is not JSON serializable
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 09:31:55,024 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 10:06:43,464 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 10:08:44,241 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 11:46:56,459 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 11:50:25,291 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 12:10:00,472 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2025-11-11 12:12:10,896 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+Traceback (most recent call last):
+  File "/home/mambe/movie-hub/app/modules/dataset/routes.py", line 70, in create_dataset
+    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mambe/movie-hub/app/modules/zenodo/services.py", line 178, in create_new_deposition
+    raise Exception(error_message)
+Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
