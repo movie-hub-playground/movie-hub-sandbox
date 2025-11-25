@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from datetime import datetime, timedelta
 from flask import session
 from flask_login import current_user, login_user
@@ -81,9 +83,6 @@ class AuthenticationService(BaseService):
             self.user_profile_repository.create(**profile_data)
             self.repository.session.commit()
 
-            verification_code = "123456"  # Futuro problema -> crear codigo aleatorio
-            self.send_email(email, verification_code)
-
         except Exception as exc:
             self.repository.session.rollback()
             raise exc
@@ -108,6 +107,9 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    def generate_verification_code(self, length=6):
+        return ''.join(random.choices(string.digits, k=length))
 
     def send_email(self, to_email, verification_code):
         try:
