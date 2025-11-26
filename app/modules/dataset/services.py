@@ -5,9 +5,10 @@ import shutil
 import uuid
 from typing import Optional
 
-from flask import request, abort
+from flask import request
 
 from app.modules.auth.services import AuthenticationService
+from app.modules.movie.models import MovieDataset
 from app.modules.dataset.models import DataSet, DSMetaData, DSViewRecord
 from app.modules.dataset.repositories import (
     AuthorRepository,
@@ -223,17 +224,26 @@ class DSDownloadRecordService(BaseService):
         Obtiene los datasets más descargados del último mes.
         
         Returns:
-            list: Lista de diccionarios con dataset_id y download_count
+            list: Lista de diccionarios con dataset_id, download_count y author
         """
-        results = self.repository.top_downloaded_datasets_last_month(limit)
+        
+        top_datasets = self.repository.top_downloaded_datasets_last_month(limit)
+        
+        trending_datasets = []
+        for dataset_id, count in top_datasets:
+            dataset = MovieDataset.query.get(dataset_id)
+            author_name = ""
+            
+            if dataset and dataset.ds_meta_data and dataset.ds_meta_data.authors:
+                author_name = dataset.ds_meta_data.authors[0].name
                 
-        return [
-            {
-                'dataset_id': dataset_id,
-                'download_count': count
-            }
-            for dataset_id, count in results
-        ]
+            trending_datasets.append({
+                'dataset': dataset,
+                'download_count': count,
+                'author': author_name
+            })
+        
+        return trending_datasets
 
 
 class DSMetaDataService(BaseService):

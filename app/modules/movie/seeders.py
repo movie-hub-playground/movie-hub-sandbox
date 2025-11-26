@@ -261,5 +261,3 @@ class MovieSeeder(BaseSeeder):
         db.session.commit()
 
         movie_service.create_version(tarantino_dataset)
-
-        print(" Movie datasets and versions seeded successfully!")
