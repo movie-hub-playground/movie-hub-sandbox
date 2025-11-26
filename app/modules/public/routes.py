@@ -5,7 +5,6 @@ from flask import render_template
 from app.modules.movie.services import MovieService
 from app.modules.dataset.services import DSDownloadRecordService
 from app.modules.featuremodel.services import FeatureModelService
-from app.modules.movie.models import MovieDataset
 from app.modules.public import public_bp
 
 logger = logging.getLogger(__name__)
@@ -30,20 +29,7 @@ def index():
     total_feature_model_views = feature_model_service.total_feature_model_views()
     
     # Añadir trending datasets
-    trending_datasets_data = download_service.top_downloaded_datasets_last_month(limit=3)
-    
-    trending_datasets = []
-    for item in trending_datasets_data:
-        ds_id = item.get('dataset_id')
-
-        dataset = MovieDataset.query.get(ds_id)
-
-        if dataset:
-            trending_datasets.append({
-                'dataset': dataset,
-                'download_count': item.get('download_count') if isinstance(item, dict) else (item[1] if len(item) > 1 else 0),
-                'author': dataset.ds_meta_data.authors[0].name if dataset.ds_meta_data and dataset.ds_meta_data.authors else "",
-            })
+    trending_datasets = download_service.top_downloaded_datasets_last_month(limit=3)
             
 
     return render_template(
