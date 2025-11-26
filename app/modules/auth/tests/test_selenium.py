@@ -1,5 +1,6 @@
 import time
 
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -48,5 +49,30 @@ def test_login_and_check_element():
         close_driver(driver)
 
 
-# Call the test function
-test_login_and_check_element()
+class TestInvalidcredentials1attempt():
+  def setup_method(self, method):
+    self.driver = initialize_driver()
+    self.vars = {}
+  
+  def teardown_method(self, method):
+    self.driver.quit()
+  
+  def test_invalid_credentials_shows_right_texts(self):
+    self.driver.get("http://localhost:5000/")
+    self.driver.set_window_size(954, 904)
+    self.driver.find_element(By.LINK_TEXT, "Login").click()
+    self.driver.find_element(By.ID, "email").click()
+    self.driver.find_element(By.ID, "email").send_keys("user1@example.com")
+    self.driver.find_element(By.ID, "password").click()
+    self.driver.find_element(By.ID, "password").send_keys("123")
+    self.driver.find_element(By.ID, "submit").click()
+    self.driver.find_element(By.CSS_SELECTOR, "span:nth-child(1)").click()
+    assert self.driver.find_element(By.CSS_SELECTOR, "span:nth-child(1)").text == "Invalid credentials. 2 attempts remaining"
+    self.driver.find_element(By.ID, "password").click()
+    self.driver.find_element(By.ID, "password").send_keys("123")
+    self.driver.find_element(By.ID, "submit").click()
+    assert self.driver.find_element(By.CSS_SELECTOR, "span:nth-child(1)").text == "Invalid credentials. 1 attempt remaining"
+    self.driver.find_element(By.ID, "password").click()
+    self.driver.find_element(By.ID, "password").send_keys("123")
+    self.driver.find_element(By.ID, "submit").click()
+    assert self.driver.find_element(By.CSS_SELECTOR, "span:nth-child(1)").text == "Too many requests. Please wait 30 seconds"
