@@ -93,20 +93,20 @@ def test_generate_verification_code():
     codes = [service.generate_verification_code() for _ in range(10)]
     assert len(set(codes)) > 1  # At least 2 different codes
 
-#def test_login_success_resets_attempts(test_client):
+def test_login_success_resets_attempts(test_client):
     
-    #with test_client.session_transaction() as sess:
-        #sess.clear()
+    with test_client.session_transaction() as sess:
+        sess.clear()
     
-    #test_client.post("/login", data=dict(email="test@example.com", password="bad"), follow_redirects=True)
+    test_client.post("/", data=dict(email="test@example.com", password="bad"), follow_redirects=True)
 
-    #response = test_client.post(
-        #"/login", data=dict(email="test@example.com", password="test1234"), follow_redirects=True
-    #)
+    response = test_client.post(
+        "/", data=dict(email="test@example.com", password="test1234"), follow_redirects=True
+    )
 
-    #assert response.request.path == url_for("public.index")
+    assert response.request.path == url_for("public.index")
     
-    #test_client.get("/logout", follow_redirects=True)
+    test_client.get("/logout", follow_redirects=True)
 
 def test_login_block_after_max_attempts(test_client):
     
