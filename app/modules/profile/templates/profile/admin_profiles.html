@@ -1,0 +1,57 @@
+{% extends "base_template.html" %}
+
+{% block title %}Admin: Manage profiles{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3"><b>Manage user profiles</b></h1>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User email</th>
+          <th>Name</th>
+          <th>Surname</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in profiles %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ users.get(p.user_id).email if users.get(p.user_id) else '—' }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.surname }}</td>
+          <td>
+            <form method="post" action="{{ url_for('profile.admin_delete_profile', profile_id=p.id) }}" onsubmit="return confirm('Delete this profile and its user?');">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <nav>
+      <ul class="pagination mb-0">
+        {% if pagination.has_prev %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('profile.admin_list_profiles', page=pagination.prev_num) }}">Previous</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+
+        <li class="page-item disabled"><span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span></li>
+
+        {% if pagination.has_next %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('profile.admin_list_profiles', page=pagination.next_num) }}">Next</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}

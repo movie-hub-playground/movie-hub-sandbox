@@ -105,7 +105,7 @@ chico sundermann">
                     </li>
 
                     <li class="sidebar-item {{ 'active' if request.endpoint == 'dataset.list_dataset' else '' }}">
-                        <a class="sidebar-link" href="{{ url_for('movie.my_datasets') }}">
+                        <a class="sidebar-link" href="{{ url_for('dataset.list_dataset') }}">
                             <i class="align-middle" data-feather="list"></i> <span
                                 class="align-middle">My datasets</span>
                         </a>
@@ -128,6 +128,17 @@ chico sundermann">
                                 class="align-middle">Log out</span>
                         </a>
                     </li>
+
+                    {% if current_user.email == 'user1@example.com' %}
+                    <li class="sidebar-header">
+                        Admin
+                    </li>
+                    <li class="sidebar-item {{ 'active' if request.endpoint == 'profile.admin_list_profiles' else '' }}">
+                        <a class="sidebar-link" href="{{ url_for('profile.admin_list_profiles') }}">
+                            <i class="align-middle" data-feather="shield"></i> <span class="align-middle">Manage profiles</span>
+                        </a>
+                    </li>
+                    {% endif %}
 
                 {% endif %}
 
