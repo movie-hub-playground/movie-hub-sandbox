@@ -15,7 +15,6 @@ class ModuleManager:
         working_dir = os.getenv("WORKING_DIR", "")
         self.modules_dir = os.path.join(working_dir, "app/modules")
         
-        #OJO A ESTE IF/ELSE QUE ES NUEVO EH
         if os.getenv("FLASK_ENV") == "production":
             ignore_filename = ".moduleignore.railway"
         else:
