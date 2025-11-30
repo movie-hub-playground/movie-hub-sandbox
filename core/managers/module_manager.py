@@ -14,7 +14,13 @@ class ModuleManager:
         self.base_dir = os.path.abspath(os.path.dirname(__file__))
         working_dir = os.getenv("WORKING_DIR", "")
         self.modules_dir = os.path.join(working_dir, "app/modules")
-        self.ignored_modules_file = os.path.join(working_dir, ".moduleignore")
+        
+        if os.getenv("FLASK_ENV") == "production":
+            ignore_filename = ".moduleignore.railway"
+        else:
+            ignore_filename = ".moduleignore"
+        
+        self.ignored_modules_file = os.path.join(working_dir, ignore_filename)
         self.ignored_modules = self._load_ignored_modules()
 
     def _load_ignored_modules(self):
