@@ -44,4 +44,4 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service="powerful-charm"
+          railway up --service="movie-hub-sandbox"
